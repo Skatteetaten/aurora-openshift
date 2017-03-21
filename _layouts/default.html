@@ -45,7 +45,7 @@
         </main>
         {% if site.menu.show %}
         <aside class="ske-layout__venstre mdlext-light-color-theme">
-          <a href="/" {% if '/' == page.url %}class="active"{% endif %}>Home</a>
+          <a href="{{ '/' | relative_url }}" {% if '/' == page.url %}class="active"{% endif %}>Home</a>
           {% for p in site.docs %}
           <a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url | relative_url }}">{{ p.title }}</a>
           {% endfor %}
