@@ -1,1 +1,14 @@
-theme: jekyll-theme-minimal
+title: Skatteetaten
+description: on GitHub
+theme: jekyll-theme-cayman
+
+github:
+  is_project_page: false
+  repository_url: https://github.com/Skatteetaten
+
+collections:
+  docs:
+    output: true
+
+menu:
+  show: true
