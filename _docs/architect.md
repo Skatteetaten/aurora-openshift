@@ -1,5 +1,5 @@
 ---
-title: Building
+title: Architect
 layout: post
 ---
 
