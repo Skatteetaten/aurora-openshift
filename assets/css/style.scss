@@ -38,6 +38,10 @@ a {
   }
 }
 
+.ske-topp__logo {
+  background: url({{ '/assets/svg/ske-logo-intern.svg' | relative_url }}) no-repeat 50%;
+}
+
 .ske-topp__venstre-seksjon {
   background: #328279;
 }
