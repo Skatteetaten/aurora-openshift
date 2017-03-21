@@ -9,6 +9,7 @@ github:
 collections:
   docs:
     output: true
+    permalink: /docs/
 
 menu:
   show: true
