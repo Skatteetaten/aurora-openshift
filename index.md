@@ -11,9 +11,9 @@ We call our platform `Aurora OpenShift` and the services we have created on top 
 ### The architecture behind Aurora OpenShift
 
  * How to [code](docs/coding) an application
- * How the application is [built](docs/building.html) on Jenkins
- * How to [configure and setup](docs/setup.html) the infrastructure on OpenShift to deploy your application
- * How to [monitor](docs/monitoring.html) your application to make sure it performs as expected
+ * How the application is [built](docs/building) on Jenkins
+ * How to [configure and setup](docs/setup) the infrastructure on OpenShift to deploy your application
+ * How to [monitor](docs/monitoring) your application to make sure it performs as expected
 
 
 ## Suggested todo list
