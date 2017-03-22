@@ -2,6 +2,8 @@ title: Aurora Openshift
 description: on GitHub
 theme: jekyll-theme-cayman
 
+markdown: kramdown
+
 collections:
   docs:
     output: true

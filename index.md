@@ -2,6 +2,9 @@
 layout: post
 ---
 
+* Toc
+{:toc}
+
 ## OpenShift
 
 Skatteetaten (The Norwegian Tax Authority) is currently in the process of using a new development platform based upon [OpenShift](https://www.openshift.org/).
