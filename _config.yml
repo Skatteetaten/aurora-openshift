@@ -1,8 +1,6 @@
 title: Aurora Openshift
 description: on GitHub
-
-github:
-  is_project_page: false
+theme: jekyll-theme-cayman
 
 collections:
   docs:
