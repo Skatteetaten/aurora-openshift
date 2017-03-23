@@ -1,10 +1,5 @@
 # The Aurora OpenShift Platform
 
-# TODOs
-
- * Need a section on the open source strategy of the NTA.
-
-
 # Introduction
 
 Welcome to the Aurora OpenShift Platform of the [Norwegian Tax Administration (NTA)](http://skatteetaten.no/en/person/) on GitHub. The Norwegian Tax
@@ -376,7 +371,7 @@ screens for displaying, configuring, upgrading and monitoring applications for d
 
 # The Aurora API
 
-The Aurora API is our platform automation API and provides endpoints for both AOC and the Aurora Console. The main
+The Aurora API is our platform automation API and provides endpoints used by both AOC and the Aurora Console. The main
 features of the API includes;
  * Execution of the instructions given by the AOC configuration files.
  * Provides abstractions that builds on the OpenShift objects and other infrastructure objects, mainly
@@ -454,3 +449,8 @@ The data is also available as an API and it used to send alerts when things are 
 ### OFF
 * there has never been a deploy
 * we want 0 instances and have 0
+
+
+# TODOs
+
+ * Need a section on the open source strategy of the NTA.
