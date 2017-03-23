@@ -10,3 +10,6 @@ collections:
 
 menu:
   show: true
+
+github:
+  is_project_page: false

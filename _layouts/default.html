@@ -50,13 +50,12 @@
       </aside>
     </div>
     <footer class="ske-bunn mdlext-dark-color-theme">
-      <a href="{{ site.github.repository_url }}" style="padding-right: 10px">View on GitHub</a>
-      Skatteetaten {{ site.time | date: '%Y' }}
       {% if site.github.is_project_page %}
       <span class="site-footer-owner">
         <a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>.
       </span>
       {% endif %}
+      <span> Skatteetaten {{ site.time | date: '%Y' }}</span>
     </footer>
   </div>
 </body>

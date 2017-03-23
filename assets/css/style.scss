@@ -24,6 +24,8 @@
   }
 }
 
+
+
 // DDH MODS
 html, body {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -99,4 +101,13 @@ a {
 
 #toc-menu #markdown-toc {
   display: block;
+  li > ul {
+    padding-left: 20px;
+  }
+}
+
+@media (min-width: 840px) {
+  .ske-layout__venstre {
+    flex: 0 0 350px;
+  }
 }
