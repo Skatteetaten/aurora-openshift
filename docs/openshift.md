@@ -364,16 +364,14 @@ diagram.
 ![Deploy](images/deploy.png)
 
 
-*Anything below the line are just notes*
-
-----
-
-
 # Aurora Console
 
-TODO:
- * Deploying an application and sets of applications with AOC
- * Managing applications with AOC and the Aurora Console
+The Aurora Console is our custom made companion web application to the of-the-shelf OpenShift Console. It does not
+replace the OpenShift Console, nor does it try to, but it adds quite a bit of functionality that the OpenShift
+Console does not have (and probably should not have). Some of it is related to viewing and manging infrastructure
+items like firewall openings, proxy configurations, certificates and database schemas, and does not have anything to
+do with OpenShift per se. Others take full advantage of the way we deploy our applications and provide powerful
+screens for displaying, configuring, upgrading and monitoring applications for different teams across environments.
 
 
 # The Aurora API
