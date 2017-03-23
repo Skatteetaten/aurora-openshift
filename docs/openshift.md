@@ -320,44 +320,53 @@ configured using environment variables, and thus would require little modificati
 adapt to running on OpenShift. And, finally, we have no application runtime dependencies to third party services for
 configuration that may or may not be available at application startup, significantly reducing risk.
 
-*Anything below the line are just notes*
-
-----
-
 
 # AOC
 
 AOC (Aurora OpenShift CLI) is our custom command line client for deploying applications to OpenShift.
 
 The need for a custom command line client became apparent when we saw that the teams started developing their own
-scripts for deploying their applications across different environments. These scripts quickly became quite complex,
-and while basically solving the same problems, they were implemented differently. A custom command line client would
-also allow us to more easily make sure that the applications were deployed and configured the same, a requirement
-for the Aurora Console, our custom web UI, to be able to create common functionality for applications and
-environments across teams. Over time, AOC matured into a tool not only for coordinating deployments to OpenShift, but
-also for triggering other infrastructure automation tasks.
+scripts for deploying applications across different environments. These scripts quickly became quite complex,
+and while basically solving the same problems, they were implemented differently. We also wanted to avoid the teams
+having to maintain a huge set of OpenShift yaml or json files for their applications and because of the very limited
+functionality in the OpenShift template mechanism, the templates we created to mitigate that were not powerful enough
+on their own to be used entirely without some manipulation through scripting.
 
 The first versions of AOC interacted with OpenShift and supporting infrastructure directly, and though useful, it was
-hard to extend, reuse functionality and roll out fixes.
+hard to extend, reuse functionality and roll out fixes. Recent versions of AOC is a simple frontend for the Aurora
+API, our core automation API on the Aurora OpenShift Platform. Over time, AOC has matured into a tool not only for
+coordinating deployments to OpenShift, but also for triggering other infrastructure automation tasks.
 
-The following features can be configured in the deploy time metadata:
- - location of the artifact in Nexus that we are deploying
- - what database schemas to generate/reuse
- - do you need a security token for secure communication?
- - config variables
- - deployment strategy, what version do you want to deploy
- - generate a route for this application
- - enable rolling upgrades
- - configure Splunk index
- - create other routes/automate opening traffic in network infrastructure (webseal/BiG-IP)
- - what version strategy you want to use
+Finally, a custom command line client would allow us to more easily make sure that the applications were deployed and
+configured the same, allowing us to make assumptions about applications when creating the Aurora Console.
 
-The setup process is idempotent so calling it several times will only update the required parts in the old objects.
+AOC is driven by a set of configuration files that describe how applications should be deployed and configured in
+different environments. The configuration files are organized in a hierarchy and are cascading, allowing us to share and
+overwrite configuration options across applications and environments. AOC sends these configuration files to the
+Aurora API which in turn creates or updates the appropriate OpenShift objects (like DeploymentConfig, Service, Route)
+and performs other infrastructure automation tasks.
 
-The result of this process is illustrated in the diagram below. Here we are using major strategy and deploying all new releases under the 1 major tag.
+The following features can be configured in the AOC configuration
+ * The application to deploy
+ * Deployment strategy; the version to deploy
+ * What database schemas to generate/reuse
+ * Should a security token for secure communication be generated?
+ * Config variables
+ * Should a Route be generated for this application
+ * Enable rolling upgrades
+ * Configure Splunk index
+ * Create other routes/automate opening traffic in network infrastructure (webseal/BiG-IP)
 
+The setup process of AOC is idempotent so calling it several times will only update the required parts in the old
+objects. After running AOC on one single application the objects created on OpenShift is illustrated by the following
+diagram.
 
 ![Deploy](images/deploy.png)
+
+
+*Anything below the line are just notes*
+
+----
 
 
 # Aurora Console
@@ -384,7 +393,7 @@ TODO: Maybe we can skip this?
     - must be served on a port of its own, not accessible to the internet
     - must expose prometheus metrics, healthchecks, env and other info (build metadata, git metadata, dependencies and other links)
     - must log using standard LOGBACK configuration
-
+   
 Applications running in our OpenShift clusters expose data about their status in four major ways
 * logs in splunk
 * metrics in grafana via prometheus
