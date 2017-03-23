@@ -376,10 +376,14 @@ screens for displaying, configuring, upgrading and monitoring applications for d
 
 # The Aurora API
 
-TODO: Maybe?
-Main resources. Not an established term, but I think it will serve us better in the long run to view the common
-collection of endpoints provided by "our" platform as a single uniform API regardless of which underlying component,
-be it Boober, Sprocket, the Aurora Console or any other component, implements a specific endpoint/resource.
+The Aurora API is our platform automation API and provides endpoints for both AOC and the Aurora Console. The main
+features of the API includes;
+ * Execution of the instructions given by the AOC configuration files.
+ * Provides abstractions that builds on the OpenShift objects and other infrastructure objects, mainly
+ AuroraApplication, AuroraDeploymentConfiguration, AuroraVersion and AuroraStatus.
+ * Endpoints for managing infrastructure components and applications, like performing upgrades and configuration 
+ changes.
+ * Miscellaneous tools to aid in development and debgging infrastructure issues. 
 
 
 # Application Monitoring
