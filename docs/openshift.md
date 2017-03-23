@@ -383,6 +383,20 @@ features of the API includes;
 
 # Application Monitoring
 
+Although OpenShift provides many mechanisms for keeping applications running even when failures occur, of course, in the
+real world applications sometimes, unavoidably, still go down. If it is your responsibility to monitor applications on 
+OpenShift, the native user interface is not actually great for that. It can be hard to get an overview of the status
+of all applications in an OpenShift project/namespace, and it is nearly impossible to get such an overview across
+namespaces. The support for providing application status to OpenShift is also quite limited; its either working 
+properly, or it is not, and getting feedback for application troubleshooting is nearly completely absent.
+
+We required quite a bit more of the platform to confidently monitor our applications, and one of the most prominent 
+features of the Aurora Console, the Application Monitoring Wallboard, addresses this. It presents a matrix of 
+applications and environments with all their associated statuses. The information in the wallboard is in part provided 
+by OpenShift and in part by the applications themselves, everything made available to the Wallboard via the Aurora API.
+In order for the Aurora API to provide all this information, the applications running on the Aurora OpenShift platform
+is required to implement the Management Interface.
+
 TODO: Maybe we can skip this?
 
  * How to [monitor](monitoring.html) your application to make sure it performs as expected
