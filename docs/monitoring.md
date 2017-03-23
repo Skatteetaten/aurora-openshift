@@ -1,7 +1,4 @@
----
-title: Monitoring
-layout: post
----
+# Monitoring
 
 Applications running in our OpenShift clusters expose data about their status in four major ways
 * logs in splunk

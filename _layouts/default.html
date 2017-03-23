@@ -10,8 +10,13 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="{{ '/assets/css/ddh-dev.min.css?v=' | append: site.github.build_revision | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+  <script>
+    function moveToc() {
+      document.getElementById('toc-menu').appendChild(document.getElementById('markdown-toc'));
+    }
+  </script>
 </head>
-<body>
+<body onload="moveToc()">
   <div class="ske-layout">
     <header class="ske-topp">
       <div class="ske-topp__venstre-seksjon">
@@ -40,27 +45,19 @@
       </div>
     </header>
     <div class="ske-layout__body">
-        <main class="main-content">
-          {{ content }}
-        </main>
-        {% if site.menu.show %}
-        <aside class="ske-layout__venstre mdlext-light-color-theme">
-          <a href="{{ '/' | relative_url }}" {% if '/' == page.url %}class="active"{% endif %}>Home</a>
-          {% for p in site.docs %}
-          <a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url | relative_url }}">{{ p.title }}</a>
-          {% endfor %}
-        </aside>
-        {% endif %}
-      </div>
-      <footer class="ske-bunn mdlext-dark-color-theme">
-        <a href="{{ site.github.repository_url }}" style="padding-right: 10px">View on GitHub</a>
-        Skatteetaten {{ site.time | date: '%Y' }}
-        {% if site.github.is_project_page %}
-        <span class="site-footer-owner">
-          <a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>.
-        </span>
-        {% endif %}
-      </footer>
+      {{ content }}
+      <aside id="toc-menu" class="ske-layout__venstre mdlext-light-color-theme">
+      </aside>
+    </div>
+    <footer class="ske-bunn mdlext-dark-color-theme">
+      <a href="{{ site.github.repository_url }}" style="padding-right: 10px">View on GitHub</a>
+      Skatteetaten {{ site.time | date: '%Y' }}
+      {% if site.github.is_project_page %}
+      <span class="site-footer-owner">
+        <a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>.
+      </span>
+      {% endif %}
+    </footer>
   </div>
 </body>
 </html>

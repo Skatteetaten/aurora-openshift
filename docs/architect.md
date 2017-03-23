@@ -1,7 +1,4 @@
----
-title: Architect
-layout: post
----
+# Architect
 
 Architect is a DockerImage built upon Alpine linux that works as an OpenShift [CustomBuilder](https://docs.openshift.com/container-platform/3.4/creating_images/custom.html)
 

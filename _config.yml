@@ -7,7 +7,6 @@ markdown: kramdown
 collections:
   docs:
     output: true
-    permalink: /docs/:title.html
 
 menu:
   show: true

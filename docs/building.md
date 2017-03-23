@@ -1,12 +1,9 @@
----
-title: Building
-layout: post
----
 
+# Building
 The following diagram show the flow from a developer commits and pushes code to git until the DockerImage has been built and pushed to the Docker registry.
 
 
-![Building](build.png)
+![Building](docs/build.png)
 
 Do you want to know more?
  * [jenkins](jenkins.html) for the details on how we build

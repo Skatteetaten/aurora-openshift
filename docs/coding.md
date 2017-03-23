@@ -1,7 +1,4 @@
----
-title: Coding
-layout: post
----
+# Coding
 
 When coding an application or adapting an existing application to OpenShift the following issues must be addressed:
 

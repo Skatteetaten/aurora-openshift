@@ -1,8 +1,4 @@
----
-title: Patching
-layout: post
-category: OpenShift
----
+# Patching
 
 Docker containers are immutable so we do not patch them in the standard sense of the word.
 
@@ -12,7 +8,7 @@ This is done the following way
  - all BuildConfigs that are generated in the Jenkinsfile will trigger on changes to architect or wingnut
  - the version in the BuildConfig is always the latest semantic release
  - this version will be rebuilt and new tags will be pushed to the DockerRegistry
- - all deployments that are not pinned will then be redeployed if that are using this latest version. 
+ - all deployments that are not pinned will then be redeployed if that are using this latest version.
 
 
 Improvement in the works:

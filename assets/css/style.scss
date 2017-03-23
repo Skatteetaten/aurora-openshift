@@ -92,3 +92,11 @@ a {
     margin: 0 10px;
   }
 }
+
+#markdown-toc {
+  display: none;
+}
+
+#toc-menu #markdown-toc {
+  display: block;
+}
