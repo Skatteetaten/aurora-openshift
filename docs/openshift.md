@@ -17,11 +17,10 @@ deploy our applications, and our guidelines and requirements to applications usi
 # A Short History
 
 The work on what would become the Aurora OpenShift Platform started late in 2014 in the wake of a major project to
-modernize the handling of the foundational data for most tax calculations in Norway. The project transitioned
-the Norwegian Tax Administration from using Oracle Forms, PL/SQL and Java EE into using simpler Java SE technologies
-with embedded containers. It also identified the need for a common platform for running and handling the vast
-amount of micro services across development, test and reference environments that the project produced, and that would
-be produced by even larger projects down the line.
+modernize the handling of the foundational data for most tax calculations in Norway. The project identified during its
+course the need for a common platform for running and handling the vast amount of micro services across development, 
+test and reference environments that the project produced, and that would be produced by even larger projects down the 
+line.
 
 A technology evaluation phase revealed the Red Hat OpenShift Container Platform (then Red Hat OpenShift Origin 3.0) to
 be the most appropriate technology to base a new common platform on. Most of 2015 was spent on getting the first few
@@ -35,9 +34,10 @@ infrastructure), and handling the sheer amount of application instances and appl
 their associated application versions, configurations and delivery schedules required more than OpenShift alone could
 provide.
 
-In the course of getting the first few applications running on OpenShift we had already done quite a bit of
-automation and integration work. As the tools and services that provided those features matured and got structured,
-they became collectively known as the Aurora OpenShift Platform by the end of 2016.
+In the course of getting the first few applications running on OpenShift, quite a few departments of the
+NTA had been involved in some sort of automation and integration work with the platform; some of them major
+undertakings. By the end of 2016, as the tools and services that provided those integrations matured and got structured,
+a select set of them became collectivly known as the Aurora OpenShift Platform.
 
 In December 2016 it was decided that as much possible of the Aurora OpenShift Platform should be open sourced under
 an APL 2.0 compatible license.
@@ -48,11 +48,9 @@ an APL 2.0 compatible license.
 The Norwegian Tax Administration maintains millions of lines of code and employs 800 people in software development,
 IT operations, management and supporting roles. When the need for new software arises - to either replace existing
 systems or to handle new or changed responsibilities - a project is created for that purpose. The projects are often
-heavily staffed with external consultants, and when complete they are transferred to the Line. The Line will
+supported with external consultants, and when complete they are transferred to the Line. The Line will
 maintain and support the software over time, usually decades, and will initially be staffed with personnel from both the
 project and from the Line itself.
-
-TODO: Maybe some infrastructure stuff in here?
 
 Even before we started exploring OpenShift we knew that we would have to automate integration with our existing
 infrastructure regardless of the platform we would end up using - so doing some sort of common initiative to provide
@@ -87,11 +85,10 @@ coordinate how the teams should use the platform and maintain reusable component
 
 # What is the Aurora OpenShift Platform?
 
-TODO: Needs work
-
-The Aurora OpenShift Platform is everything the Norwegian Tax Administration has developed to support infrastructure
-automation, support application configuration, deployment and management, common application base images
-and common build and versioning mechanism for application archives and docker images.
+The Aurora OpenShift Platform is everything the Norwegian Tax Administration has developed to support
+application configuration, deployment and management on OpenShift, common application base images, and a common build 
+and versioning mechanism for application archives and Docker images. A collect set of infrastructure integration and
+automation components are also considered part of the platform.
 
 The main user facing components implementing these mechanisms are:
 
@@ -104,7 +101,7 @@ applications across teams and environments.
  * Architect: A Docker image that implements the image build process for all our supported runtime technologies
  * Base Images: A set of Alpine Linux based Docker Images that all our applications are built from
 
-Coming sections will describe these components in more detail.
+The coming sections will describe these components in more detail.
 
 
 # How we Develop and Build our Applications
