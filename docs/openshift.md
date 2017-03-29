@@ -190,10 +190,6 @@ APPLICATION_ARGS from the openshift.json file and optionally enable remote debug
 The start script we use is heavily inspired by several other similar solutions, chief among them
 [run-java-sh](https://github.com/fabric8io-images/run-java-sh).
 
-### Building Node Applications
-
-TODO: TBD
-
 
 ### Common Steps
 
@@ -204,11 +200,6 @@ variables for the application. This process is described in more detail later.
 
 After the application Docker image has been built it is pushed to our internal Docker registry. We also tag the image
 with several version tags to support our deployment strategy. Our versioning strategy is described below.
-
-
-## The Java Base Image: Wingnut
-
-TODO: Add something meaningful here
 
 
 ## Image Versioning Strategy: The AuroraVersion
@@ -226,8 +217,6 @@ can be seen in the diagram below;
 When the application has a semver compliant version we additionally push individual tags for the major version,
 for the major and minor version combined, for the major, minor and patch version combined, and finally the
 latest tag. An example is provided in the following diagram;
-
-TODO: Replace diagram with description of tags
 
 ![Versioning](images/versioning.png)
 
@@ -397,8 +386,3 @@ is required to implement our proprietary Management Interface (which is in part 
 Information from the Management Interface of the applications in combination with information we collect about the
 applications from OpenShift via the OpenShift API collectively contributes to an aggregated application status that we
 call the AuroraStatus.
-
-
-# TODOs
-
- * Need a section on the open source strategy of the NTA.
