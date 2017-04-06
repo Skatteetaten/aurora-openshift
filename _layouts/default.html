@@ -5,11 +5,11 @@
   <title>{{ page.title | default: site.title }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#157878">
-  <link rel="shortcut icon" type="image/png" href="{{ '/favicon.png' | relative_url }}">
+  <link rel="shortcut icon" type="image/png" href="{{ '/favicon.png' }}">
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="{{ '/assets/css/ddh-dev.min.css?v=' | append: site.github.build_revision | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/ddh-dev.min.css?v=' | append: site.github.build_revision }}">
+  <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision }}">
   <script>
     function moveToc() {
       document.getElementById('toc-menu').appendChild(document.getElementById('markdown-toc'));
