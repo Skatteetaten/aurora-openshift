@@ -1,10 +1,5 @@
 # The Aurora OpenShift Platform
 
-# TODOs
-
- * Need a section on the open source strategy of the NTA.
-
-
 # Introduction
 
 Welcome to the Aurora OpenShift Platform of the [Norwegian Tax Administration (NTA)](http://skatteetaten.no/en/person/) on GitHub. The Norwegian Tax
@@ -22,11 +17,10 @@ deploy our applications, and our guidelines and requirements to applications usi
 # A Short History
 
 The work on what would become the Aurora OpenShift Platform started late in 2014 in the wake of a major project to
-modernize the handling of the foundational data for most tax calculations in Norway. The project transitioned
-the Norwegian Tax Administration from using Oracle Forms, PL/SQL and Java EE into using simpler Java SE technologies
-with embedded containers. It also identified the need for a common platform for running and handling the vast
-amount of micro services across development, test and reference environments that the project produced, and that would
-be produced by even larger projects down the line.
+modernize the handling of the foundational data for most tax calculations in Norway. The project identified during its
+course the need for a common platform for running and handling the vast amount of micro services across development, 
+test and reference environments that the project produced, and that would be produced by even larger projects down the 
+line.
 
 A technology evaluation phase revealed the Red Hat OpenShift Container Platform (then Red Hat OpenShift Origin 3.0) to
 be the most appropriate technology to base a new common platform on. Most of 2015 was spent on getting the first few
@@ -40,9 +34,10 @@ infrastructure), and handling the sheer amount of application instances and appl
 their associated application versions, configurations and delivery schedules required more than OpenShift alone could
 provide.
 
-In the course of getting the first few applications running on OpenShift we had already done quite a bit of
-automation and integration work. As the tools and services that provided those features matured and got structured,
-they became collectively known as the Aurora OpenShift Platform by the end of 2016.
+In the course of getting the first few applications running on OpenShift, quite a few departments of the
+NTA had been involved in some sort of automation and integration work with the platform; some of them major
+undertakings. By the end of 2016, as the tools and services that provided those integrations matured and got structured,
+a select set of them became collectivly known as the Aurora OpenShift Platform.
 
 In December 2016 it was decided that as much possible of the Aurora OpenShift Platform should be open sourced under
 an APL 2.0 compatible license.
@@ -53,11 +48,9 @@ an APL 2.0 compatible license.
 The Norwegian Tax Administration maintains millions of lines of code and employs 800 people in software development,
 IT operations, management and supporting roles. When the need for new software arises - to either replace existing
 systems or to handle new or changed responsibilities - a project is created for that purpose. The projects are often
-heavily staffed with external consultants, and when complete they are transferred to the Line. The Line will
+supported with external consultants, and when complete they are transferred to the Line. The Line will
 maintain and support the software over time, usually decades, and will initially be staffed with personnel from both the
 project and from the Line itself.
-
-TODO: Maybe some infrastructure stuff in here?
 
 Even before we started exploring OpenShift we knew that we would have to automate integration with our existing
 infrastructure regardless of the platform we would end up using - so doing some sort of common initiative to provide
@@ -92,11 +85,10 @@ coordinate how the teams should use the platform and maintain reusable component
 
 # What is the Aurora OpenShift Platform?
 
-TODO: Needs work
-
-The Aurora OpenShift Platform is everything the Norwegian Tax Administration has developed to support infrastructure
-automation, support application configuration, deployment and management, common application base images
-and common build and versioning mechanism for application archives and docker images.
+The Aurora OpenShift Platform is everything the Norwegian Tax Administration has developed to support
+application configuration, deployment and management on OpenShift, common application base images, and a common build 
+and versioning mechanism for application archives and Docker images. A collect set of infrastructure integration and
+automation components are also considered part of the platform.
 
 The main user facing components implementing these mechanisms are:
 
@@ -109,7 +101,7 @@ applications across teams and environments.
  * Architect: A Docker image that implements the image build process for all our supported runtime technologies
  * Base Images: A set of Alpine Linux based Docker Images that all our applications are built from
 
-Coming sections will describe these components in more detail.
+The coming sections will describe these components in more detail.
 
 
 # How we Develop and Build our Applications
@@ -198,10 +190,6 @@ APPLICATION_ARGS from the openshift.json file and optionally enable remote debug
 The start script we use is heavily inspired by several other similar solutions, chief among them
 [run-java-sh](https://github.com/fabric8io-images/run-java-sh).
 
-### Building Node Applications
-
-TODO: TBD
-
 
 ### Common Steps
 
@@ -212,11 +200,6 @@ variables for the application. This process is described in more detail later.
 
 After the application Docker image has been built it is pushed to our internal Docker registry. We also tag the image
 with several version tags to support our deployment strategy. Our versioning strategy is described below.
-
-
-## The Java Base Image: Wingnut
-
-TODO: Add something meaningful here
 
 
 ## Image Versioning Strategy: The AuroraVersion
@@ -234,8 +217,6 @@ can be seen in the diagram below;
 When the application has a semver compliant version we additionally push individual tags for the major version,
 for the major and minor version combined, for the major, minor and patch version combined, and finally the
 latest tag. An example is provided in the following diagram;
-
-TODO: Replace diagram with description of tags
 
 ![Versioning](images/versioning.png)
 
@@ -320,126 +301,88 @@ configured using environment variables, and thus would require little modificati
 adapt to running on OpenShift. And, finally, we have no application runtime dependencies to third party services for
 configuration that may or may not be available at application startup, significantly reducing risk.
 
-*Anything below the line are just notes*
-
-----
-
 
 # AOC
 
 AOC (Aurora OpenShift CLI) is our custom command line client for deploying applications to OpenShift.
 
 The need for a custom command line client became apparent when we saw that the teams started developing their own
-scripts for deploying their applications across different environments. These scripts quickly became quite complex,
-and while basically solving the same problems, they were implemented differently. A custom command line client would
-also allow us to more easily make sure that the applications were deployed and configured the same, a requirement
-for the Aurora Console, our custom web UI, to be able to create common functionality for applications and
-environments across teams. Over time, AOC matured into a tool not only for coordinating deployments to OpenShift, but
-also for triggering other infrastructure automation tasks.
+scripts for deploying applications across different environments. These scripts quickly became quite complex,
+and while basically solving the same problems, they were implemented differently. We also wanted to avoid the teams
+having to maintain a huge set of OpenShift yaml or json files for their applications and because of the very limited
+functionality in the OpenShift template mechanism, the templates we created to mitigate that were not powerful enough
+on their own to be used entirely without some manipulation through scripting.
 
 The first versions of AOC interacted with OpenShift and supporting infrastructure directly, and though useful, it was
-hard to extend, reuse functionality and roll out fixes.
+hard to extend, reuse functionality and roll out fixes. Recent versions of AOC is a simple frontend for the Aurora
+API, our core automation API on the Aurora OpenShift Platform. Over time, AOC has matured into a tool not only for
+coordinating deployments to OpenShift, but also for triggering other infrastructure automation tasks.
 
-The following features can be configured in the deploy time metadata:
- - location of the artifact in Nexus that we are deploying
- - what database schemas to generate/reuse
- - do you need a security token for secure communication?
- - config variables
- - deployment strategy, what version do you want to deploy
- - generate a route for this application
- - enable rolling upgrades
- - configure Splunk index
- - create other routes/automate opening traffic in network infrastructure (webseal/BiG-IP)
- - what version strategy you want to use
+Finally, a custom command line client would allow us to more easily make sure that the applications were deployed and
+configured the same, allowing us to make assumptions about applications when creating the Aurora Console.
 
-The setup process is idempotent so calling it several times will only update the required parts in the old objects.
+AOC is driven by a set of configuration files that describe how applications should be deployed and configured in
+different environments. The configuration files are organized in a hierarchy and are cascading, allowing us to share and
+overwrite configuration options across applications and environments. AOC sends these configuration files to the
+Aurora API which in turn creates or updates the appropriate OpenShift objects (like DeploymentConfig, Service, Route)
+and performs other infrastructure automation tasks.
 
-The result of this process is illustrated in the diagram below. Here we are using major strategy and deploying all new releases under the 1 major tag.
+The following features can be configured in the AOC configuration
+ * The application to deploy
+ * Deployment strategy; the version to deploy
+ * What database schemas to generate/reuse
+ * Should a security token for secure communication be generated?
+ * Config variables
+ * Should a Route be generated for this application
+ * Enable rolling upgrades
+ * Configure Splunk index
+ * Create other routes/automate opening traffic in network infrastructure (webseal/BiG-IP)
 
+The setup process of AOC is idempotent so calling it several times will only update the required parts in the old
+objects. After running AOC on one single application the objects created on OpenShift is illustrated by the following
+diagram.
 
 ![Deploy](images/deploy.png)
 
 
 # Aurora Console
 
-TODO:
- * Deploying an application and sets of applications with AOC
- * Managing applications with AOC and the Aurora Console
+The Aurora Console is our custom made companion web application to the of-the-shelf OpenShift Console. It does not
+replace the OpenShift Console, nor does it try to, but it adds quite a bit of functionality that the OpenShift
+Console does not have (and probably should not have). Some of it is related to viewing and manging infrastructure
+items like firewall openings, proxy configurations, certificates and database schemas, and does not have anything to
+do with OpenShift per se. Others take full advantage of the way we deploy our applications and provide powerful
+screens for displaying, configuring, upgrading and monitoring applications for different teams across environments.
 
 
 # The Aurora API
 
-TODO: Maybe?
-Main resources. Not an established term, but I think it will serve us better in the long run to view the common
-collection of endpoints provided by "our" platform as a single uniform API regardless of which underlying component,
-be it Boober, Sprocket, the Aurora Console or any other component, implements a specific endpoint/resource.
+The Aurora API is our platform automation API and provides endpoints used by both AOC and the Aurora Console. The main
+features of the API includes;
+ * Execution of the instructions given by the AOC configuration files.
+ * Provides abstractions that builds on the OpenShift objects and other infrastructure objects, mainly
+ AuroraApplication, AuroraDeploymentConfiguration, AuroraVersion and AuroraStatus.
+ * Endpoints for managing infrastructure components and applications, like performing upgrades and configuration 
+ changes.
+ * Miscellaneous tools to aid in development and debgging infrastructure issues. 
 
 
 # Application Monitoring
 
-TODO: Maybe we can skip this?
+Although OpenShift provides many mechanisms for keeping applications running even when failures occur, of course, in the
+real world applications sometimes, unavoidably, still go down. If it is your responsibility to monitor applications on 
+OpenShift, the native user interface is not actually great for that. It can be hard to get an overview of the status
+of all applications in an OpenShift project/namespace, and it is nearly impossible to get such an overview across
+namespaces. The support for providing application status to OpenShift is also quite limited; its either working 
+properly, or it is not, and getting feedback for application troubleshooting is nearly completely absent.
 
- * How to [monitor](monitoring.html) your application to make sure it performs as expected
- - All applications must implement the management interface demands
-    - must be served on a port of its own, not accessible to the internet
-    - must expose prometheus metrics, healthchecks, env and other info (build metadata, git metadata, dependencies and other links)
-    - must log using standard LOGBACK configuration
+We required quite a bit more of the platform to confidently monitor our applications, and one of the most prominent 
+features of the Aurora Console, the Application Monitoring Wallboard, addresses this. It presents a matrix of 
+applications and environments with all their associated statuses. The information in the wallboard is in part provided 
+by OpenShift and in part by the applications themselves, everything made available to the Wallboard via the Aurora API.
+In order for the Aurora API to provide all this information, the applications running on the Aurora OpenShift platform
+is required to implement our proprietary Management Interface (which is in part based on Spring Boot Actuator).
 
-Applications running in our OpenShift clusters expose data about their status in four major ways
-* logs in splunk
-* metrics in grafana via prometheus
-* health checks in the application
-* state of the Openshift objects in the cluster
-
-An overall AuroraStatus for an application is calculated based upon the OpenShift objects and health checks.
-
-## Splunk
-Indexing in Splunk is configured when you set up an application. A preconfigured logback.xml configuration is available
-in the docker image so that all applications log in the same pattern.
-
-## Metrics
-Applications expose metrics via a endpoint to prometheus and is automatically scraped. The infrastructure also expose
-metrics that it knows about itself and the running applications.
-
-## Healthcheks
-Health checks from [SpringBoot](https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#production-ready-health)
-is used as the readiness check for application on OpenShift.
-
-## OpenShift objects
-Knowing the overall status of an application and alerting on that status is required.
-
-In order to find the status for a component we check the OpenShift objects for that application and fetch some information from the health check.
-
-All this information is aggregated into a status level of either DOWN, OBSERVE, HEALTHY or OFF.
-
-An endpoint exposing this information is periodically polled by an alerting system alerting the given ops personal if they need to take action.
-
-
-## AuroraStatus
-
-This status is shown for all applications in a central UI. Ops people can slice and dice this view to see that their applications are ok.
-
-The data is also available as an API and it used to send alerts when things are down.
-
-### HEALTHY
-* there is an ongoing deployment
-* we want 3 instances and have 3 ready instances
-
-### OBSERVE
-* the average number of restarts for all instance is over OBSERVE limit, but below DOWN limit
-* we want 3 instances but only 2 are ready
-  * and there is no ongoing deploy
-* we want 3 instances but have 5
-  * and there is no ongoing deploy
-
-### DOWN
-* the last deployment failed
-* there are instances from two seperate deploys running
-** and the youngest instance is older then a limit
-* we want 3 instances but none are ready
-  * and there is no ongoing deploy
-* the average number of restarts for all instance is over DOWN limit
-
-### OFF
-* there has never been a deploy
-* we want 0 instances and have 0
+Information from the Management Interface of the applications in combination with information we collect about the
+applications from OpenShift via the OpenShift API collectively contributes to an aggregated application status that we
+call the AuroraStatus.
