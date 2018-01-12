@@ -95,9 +95,10 @@ The main user facing components implementing these mechanisms are:
  * Aurora Console: The most prominent feature of the Aurora OpenShift platform is the Aurora Console. The Aurora Console is a custom
 built web application that we use in conjunction with the platform provided OpenShift Console to better handle
 applications across teams and environments.
- * AOC: The Aurora OpenShift Command Line Client. Our custom built CLI that works with a set of high level configuration
+ * AO: The Aurora OpenShift Command Line Client. Our custom built CLI that works with a set of high level configuration
  files that helps managing applications and configuration across environments.
- * The Aurora API: The API that implements all our custom services. Used by the Aurora Console and AOC.
+ * AuroraConfig: A DSL config format for describing applications and groupings of applications (environments)
+ * The Aurora API: The API that implements all our custom services. Used by the Aurora Console and AO.
  * Architect: A Docker image that implements the image build process for all our supported runtime technologies
  * Base Images: A set of Alpine Linux based Docker Images that all our applications are built from
 
@@ -130,9 +131,8 @@ Additionally we prefer that the applications are built via Jenkins and that the 
 contains a Jenkinsfile that describes the build process. Ideally, the Jenkinsfile uses our common Jenkins pipeline
 scripts (making the Jenkinsfile less than 10 lines of code).
 
-We provide a [Tailored Service Template](https://www.thoughtworks.com/radar/techniques/tailored-service-template) for a
-standard application that fulfill all these demands that teams building new applications can use to get started.
-
+We provide a [Tailored Service Template](https://www.thoughtworks.com/radar/techniques/tailored-service-template)  [openshift-reference-springboot-server](https://github.com/Skatteetaten/openshift-reference-springboot-server) for a
+standard application that fulfill all these demands that teams building new applications can use to get started. 
 
 ## The Image Build Process
 
@@ -290,7 +290,7 @@ to the environment the application would run in, and we also needed to support s
 schema at the same time. For instance, version 1.0.0 of an application will often be configured differently than version
 2.0.0 of that same application.
 
-What we ended up doing was to let AOC, from the AOC config (described later), create a ConfigMap with a file that
+What we ended up doing was to let AO, from the AO config (described later), create a ConfigMap with a file that
 contains the configuration for the application in the environment it is being deployed to. This configuration file is
 mounted in the application Docker container by the DeploymentConfig, read by the entrypoint wrapper script
 (described in "The Application Image Builder: Architect") and exposed as environment variables for the application.
@@ -301,10 +301,15 @@ configured using environment variables, and thus would require little modificati
 adapt to running on OpenShift. And, finally, we have no application runtime dependencies to third party services for
 configuration that may or may not be available at application startup, significantly reducing risk.
 
+## Development flow
+In order to support rapid development on the platform a variant of the image build process has been created. The Architect
+builder has received support for binary builds. This means that you can build a Delivery Bundle locally and then send it directly to the builder. 
 
-# AOC
+A demo of this can be seen in the following asciicinema. [demo of development flow](https://asciinema.org/a/AU2ZyCk8X0CnJ51MarmhqIp9w)
 
-AOC (Aurora OpenShift CLI) is our custom command line client for deploying applications to OpenShift.
+# AO
+
+[AO](https://github.com/Skatteetaten/ao) (Aurora OpenShift CLI) is our custom command line client for deploying applications to OpenShift.
 
 The need for a custom command line client became apparent when we saw that the teams started developing their own
 scripts for deploying applications across different environments. These scripts quickly became quite complex,
@@ -313,21 +318,21 @@ having to maintain a huge set of OpenShift yaml or json files for their applicat
 functionality in the OpenShift template mechanism, the templates we created to mitigate that were not powerful enough
 on their own to be used entirely without some manipulation through scripting.
 
-The first versions of AOC interacted with OpenShift and supporting infrastructure directly, and though useful, it was
-hard to extend, reuse functionality and roll out fixes. Recent versions of AOC is a simple frontend for the Aurora
-API, our core automation API on the Aurora OpenShift Platform. Over time, AOC has matured into a tool not only for
+The first versions of AO interacted with OpenShift and supporting infrastructure directly, and though useful, it was
+hard to extend, reuse functionality and roll out fixes. Recent versions of AO is a simple frontend for the Aurora
+API, our core automation API on the Aurora OpenShift Platform. Over time, AO has matured into a tool not only for
 coordinating deployments to OpenShift, but also for triggering other infrastructure automation tasks.
 
 Finally, a custom command line client would allow us to more easily make sure that the applications were deployed and
 configured the same, allowing us to make assumptions about applications when creating the Aurora Console.
 
-AOC is driven by a set of configuration files that describe how applications should be deployed and configured in
+AO is driven by a set of configuration files (AuroraConfig) that describe how applications should be deployed and configured in
 different environments. The configuration files are organized in a hierarchy and are cascading, allowing us to share and
-overwrite configuration options across applications and environments. AOC sends these configuration files to the
+overwrite configuration options across applications and environments. AO sends these configuration files to the
 Aurora API which in turn creates or updates the appropriate OpenShift objects (like DeploymentConfig, Service, Route)
 and performs other infrastructure automation tasks.
 
-The following features can be configured in the AOC configuration
+The following features can be configured in the AuroraConfig configuration
  * The application to deploy
  * Deployment strategy; the version to deploy
  * What database schemas to generate/reuse
@@ -338,8 +343,8 @@ The following features can be configured in the AOC configuration
  * Configure Splunk index
  * Create other routes/automate opening traffic in network infrastructure (webseal/BiG-IP)
 
-The setup process of AOC is idempotent so calling it several times will only update the required parts in the old
-objects. After running AOC on one single application the objects created on OpenShift is illustrated by the following
+The setup process of AO is idempotent so calling it several times will only update the required parts in the old
+objects. After running AO on one single application the objects created on OpenShift is illustrated by the following
 diagram.
 
 ![Deploy](images/deploy.png)
@@ -357,13 +362,14 @@ screens for displaying, configuring, upgrading and monitoring applications for d
 
 # The Aurora API
 
-The Aurora API is our platform automation API and provides endpoints used by both AOC and the Aurora Console. The main
+The Aurora API is our platform automation API and provides endpoints used by both AO and the Aurora Console. The main
 features of the API includes;
- * Execution of the instructions given by the AOC configuration files.
+ * Execution of the instructions given by the AuroraConfig configuration files.
  * Provides abstractions that builds on the OpenShift objects and other infrastructure objects, mainly
  AuroraApplication, AuroraDeploymentConfiguration, AuroraVersion and AuroraStatus.
  * Endpoints for managing infrastructure components and applications, like performing upgrades and configuration 
  changes.
+ * Produce status metrics for an application on the platform. Fetches information from Docker registry, the cluster and the applications  management interface.
  * Miscellaneous tools to aid in development and debgging infrastructure issues. 
 
 
