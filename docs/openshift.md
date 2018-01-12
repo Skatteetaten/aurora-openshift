@@ -95,12 +95,13 @@ The main user facing components implementing these mechanisms are:
  * Aurora Console: The most prominent feature of the Aurora OpenShift platform is the Aurora Console. The Aurora Console is a custom
 built web application that we use in conjunction with the platform provided OpenShift Console to better handle
 applications across teams and environments.
- * AO: The Aurora OpenShift Command Line Client. Our custom built CLI that works with a set of high level configuration
+ * [AO](https://github.com/Skatteetaten/ao): The Aurora OpenShift Command Line Client. Our custom built CLI that works with a set of high level configuration
  files that helps managing applications and configuration across environments.
  * AuroraConfig: A DSL config format for describing applications and groupings of applications (environments)
- * The Aurora API: The API that implements all our custom services. Used by the Aurora Console and AO.
- * Architect: A Docker image that implements the image build process for all our supported runtime technologies
- * Base Images: A set of Alpine Linux based Docker Images that all our applications are built from
+ * The Aurora API: The API that implements all our custom services. Used by the Aurora Console and AO. [boober](https://github.com/Skatteetaten/boober), [mokey](https://github.com/Skatteetaten/mokey), [dbh](https://github.com/Skatteetaten/dbh) 
+ * [Architect](https://github.com/Skatteetaten/architect): A Docker image that implements the image build process for all our supported runtime technologies
+ * Base Images: A set of Alpine Linux based Docker Images that all our applications are built from. [wingnut](https://github.com/Skatteetaten/wingnut) and [wrench](https://github.com/Skatteetaten/wrench)
+
 
 The coming sections will describe these components in more detail.
 
@@ -232,12 +233,12 @@ deploying and patching our applications on OpenShift. Our deployment and patchin
 
 ## Deployment and Patching Strategy
 
-When deploying new applications to OpenShift we always use our proprietary AOC command line tool. This tool ensures that all
-deployed applications follow the same basic pattern. AOC is described in depth later so we will not go
+When deploying new applications to OpenShift we always use our proprietary AO command line tool. This tool ensures that all
+deployed applications follow the same basic pattern. AO is described in depth later so we will not go
 into all the details here, but for the purposes of describing our deployment and patching strategy we need to highlight
-a couple of the objects that AOC generates.
+a couple of the objects that AO generates.
 
-Based on the configuration files given to AOC, we generate the OpenShift objects that are required to run the
+Based on the configuration files given to AO, we generate the OpenShift objects that are required to run the
 application. We generate one
 [ImageStream](https://docs.openshift.com/container-platform/latest/architecture/core_concepts/builds_and_image_streams.html#image-streams)
 for each application we deploy. This ImageStream contains one (and only one) scheduled tag. We then generate a
