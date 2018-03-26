@@ -1,0 +1,5 @@
+schemaVersion: v1
+affiliation: paas
+permissions : 
+  group : [PAAS_OPS, PAAS_DEV]
+splunkIndex : paas-test

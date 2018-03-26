@@ -1,0 +1,16 @@
+schemaVersion: v1
+affiliation: paas
+permissions : 
+  group : [PAAS_OPS, PAAS_DEV]
+splunkIndex : paas-test
+groupId: no.skatteetaten.aurora.openshift
+artifactId: openshift-reference-springboot-server
+version: 1
+replicas: 3
+certificate: true
+route: true
+database: true
+config: 
+  FOO: BAZ
+cluster: utv 
+
