@@ -1,0 +1,4 @@
+|schemaVersion                  | always     |              | All files in a given AuroraConfig must share a schemaVersion. For now only v1 is supported, it is here incase we need to break compatability
+|type                           |            |              | What type of flow does this application follow. Options here are [deploy, development, template, localTemplate]
+|applicationPlatform            | for deploy | java         | Specify application platform. java or web are valid plattforms
+
