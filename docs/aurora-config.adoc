@@ -48,6 +48,17 @@ The current types are available
  - LocalTemplate: Deploy an template from the templates folder of the AuroraConfig
 
 TODO: Templates should require a VERSION field if you want to change version in AuroraConsole
+TODO: Templates shoudl require a NAME field that will be prefix of all objects generated
+
+=== How is AuroraConfig parsed
+. given an ApplicationId determine what files to use. 
+. extract a Header from the given files using the HeaderFields
+.. this exposes variables to the next step that can be used as default values
+.. also extracts the variables needed to create the environment
+.. the type field is used to determine the rest of the workflow
+. validate that the header fields are correct
+.
+
 
 === Example configuration for the reference-application
 Below is an example of how you could configure an instance of the https://github.com/skatteetaten/openshift-reference-springboot-server[reference application]
@@ -87,13 +98,10 @@ include::auroraConfig/reference-full.yaml[]
 |=======
 |path                           | required   | default      | description 
 |name                           |            | 'fileName'   | The name of the application. All objects created in the cluster will get an app label with this name. Cannot be longer then 40 (alphanumeric -). Note that the default value here is the actual name of the app file.
-|affiliation                    | always     |              | Used to group the project for resource monitoring. All projects start with affiliation. lower case letters max length 10
+include::fields/about.adoc[]
+include::fields/header.adoc[]
+
 |cluster                        | always     |              | What cluster should the application be deployed to. Must be a valid cluster name. 
-|type                           |            | deploy       | What type of flow does this application follow. Options here are [deploy, development, template, localTemplate]
-|schemaVersion                  | always     |              | All files in a given AuroraConfig must share a schemaVersion. For now only v1 is supported, it is here incase we need to break compatability
-|envName                        |            | 'folderName' | Change the name of the project. Note that the default value here is the actual name of the folder where the app file is. This option must be specified in either global or env file.
-|env/name                       |            |              | An alias for envName 
-|env/ttl                        |            |              | Set a time duration in format 1d, 12h aso that indicate how long until this namespace should be deleted
 |ttl                            |            |              | Set a time duration in format 1d, 12h aso that indicate how long until this application should be deleted
 |permissions/admin              | always |                  | The groups in OpenShift that will have the admin role for the given project. Can either be an array or a space delimitered string. This option must be specified in either global or env file.
 |permissions/view               |  |                        | The groups in OpenShift that will have the view role for the given project. Can either be an array or a space delimitered string. This option must be specified in either global or env file.
@@ -166,7 +174,6 @@ include::auroraConfig/reference-full.yaml[]
 
 |=======
 |path                           | required   | default      | description 
-|applicationPlatform            | for deploy | java         | Specify application platform. java or web are valid plattforms
 |builder/name                   |            | architect    | Change the builder used to build development flow
 |builder/version                |            | 1            | Change the builder version to use
 |baseImage/name                 |            |              | For applicationPlatform java the default is flange, for web it is wrench
