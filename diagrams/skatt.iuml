@@ -1,0 +1,39 @@
+
+
+skinparam state {
+    BackgroundColor #fdf6e3
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+
+skinparam activity {
+    BackgroundColor #fdf6e3
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+
+}
+
+skinparam note {
+    BackgroundColor #fdf6e3
+    BorderColor gray
+}
