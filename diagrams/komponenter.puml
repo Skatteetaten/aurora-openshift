@@ -1,0 +1,60 @@
+@startuml
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+DatabaseHotell<<AOS>> --> DriveInnDb<<OS4>>
+Boober --> [CR skjema] DatabaseHotell
+
+Wembley<<SITJ>> -up-> [endring i route, configma] OpenShift
+Wembley --> [BigIP åpning] Skap
+
+Sprocket <<OS2>> -down-> [endringer i DC] OpenShift<<OS4>>
+Sprocket --> [app2app cert] Skap<<SITJ>>
+
+Skap --> [åpner brannmur] BigIP<<ANNET>>
+Marjory<<SITJ>> -up-> [endringer i ruter,svc] OpenShift
+Marjory --> [webseal åpning] Skap
+Skap --> Webseal<<OS4>>
+
+Prometheus<<AOT>> -->[metrikker] OpenShift
+Grafana<<ANNET>> -->[visualiserer metrikker] Prometheus
+
+ResourceMonitor<<OS1>> -->[henter metrikker] Prometheus
+ResourceMonitor -->[aggregerer metrikker] ResourceMonitor
+ResourceMonitor -->[sender metrikker] Prometheus
+
+UncleMatt<<OS1>> -right-> INTERNETT
+Console<<OS2>> -->  [lager database] DatabaseHotell
+
+Console --> [webdeploy] Boober
+Console -up->[nettdebug] UncleMatt
+Console -->[webseal status] Skap
+
+AO<<AOS>> -left-> [deploy, endre config]Boober<<AOS>>
+Boober --> OpenShift
+Boober --> [ tagge release]DockerRegistry
+
+ResourceMonitor --> [tester nettverk ytelse] UncleMatt
+
+SplunkForwarder<<AOT>> -down->Splunk<<ANNET>>
+SplunkForwarder -up-> [leser logger]OpenShift
+
+
+BigIP --> [sjekker rute]Red<<SITJ>>
+Red --> OpenShift
+Boober --> [CRUD auroraConfig] Bitbucket<<ANNET>>
+Boober --> [CRUD vaults] Bitbucket<<ANNET>>
+
+Mokey<<AOS>> --> [applicationState]OpenShift
+Mokey -up-> [henter manifest]DockerRegistry<<ANNET>>
+Prometheus -->[henter AURORA_STATUS]Mokey
+OpenShift -->[henter images]DockerRegistry
+
+
+Architect<<AOT>> --> [lager images]DockerRegistry
+Cotterpin<<AOT>> --> [lager images go]DockerRegistry
+DockerRegistry --> [base oracle8]Wrench<<AOT>>
+DockerRegistry --> [base openjdk8]Wingnut<<AOT>>
+DockerRegistry --> [base web]Flange<<AOT>>
+@enduml
