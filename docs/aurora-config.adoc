@@ -4,6 +4,20 @@ Aurora Config is an opinoinated way of configuring how namespaces and applicatio
 
 Config files are written either as Json or Yaml. All the examples will use YAML since it is easier on the eyes. 
 
+
+=== How is AuroraConfig parsed
+. given an ApplicationId determine what files to use. See anchor:Files[]
+. extract and validate the DeploymentSpecHeader from the given files using the HeaderMapper See anchor:Header[]
+. extract and validate DeploymentSpec from the FieldMappers.
+.. different fieldMappers are used for the different types
+. generate objects according to the type field.
+.. for deploy and development the generate process uses an DSL in Kotlin to generate the objects
+.. for tempalte and localTemplate a template is applied
+. enrich the generate objects with information from the DeploymentSpec
+. the objects are created/updated in the cluster
+.. note that this process does not use 'oc apply' on the objects. The state in the cluster is overwritten.
+
+
 === Dictionary
 AuroraConfig: A set of files that share the same schemaVersion and affiliation. Files are either json or yaml. 
 LocalTemplate: An AuroraConfig can contain a templates folder with OpenShift template files.
@@ -12,16 +26,18 @@ ApplicationId: Indentify an Application. Contains the name of the application an
 DeploymentSpec: Result of applying an ApplicationId to a given AuroraConfig
 
 === Files
+[#Files]
 Given that you have an application with name 'reference' in the environment 'dev' the following files will be present
 
 Note that the suffix of the file can be either json or yaml
-|=======
-|filename       | name   | reason
-|about.yaml     | global | All applications in a given AuroraConfig will inherit from it
-|foo.yaml       | base   | All applications named 'reference' in all environments will inherit from it
-|dev.yaml       | env    | All applications in the env 'dev' inhert from it
-|dev/foo.yaml   | app    | Instructons on how to deploy the application 'reference' in 'dev'
-|=======
+[cols="1,1,2", options="header"]
+|===
+| filename       | name   | reason
+| about.yaml     | global | All applications in a given AuroraConfig will inherit from it
+| foo.yaml       | base   | All applications named 'reference' in all environments will inherit from it
+| dev.yaml       | env    | All applications in the env 'dev' inhert from it
+| dev/foo.yaml   | app    | Instructons on how to deploy the application 'reference' in 'dev'
+|===
 
 In order to generate an DeploymentSpec for a given ApplicationId files are read in the order specified above and merged together. 
 Information about what file contains what instruction is recorded so that it is possible to get a birds eye view over a DeploymentSpec and where the different instructions come from.
@@ -37,6 +53,23 @@ envFile: about-template.yaml
 
 In this scenario 'foo.yaml' would be used instead of 'reference.yaml' as the base file and the 'about-template.yaml' file would be used instead of 'about.yaml'
 
+=== Header
+Some instructions are read as a header. This is done in order to provide sane defaults for the rest of the process.
+
+Some of the header fields must be specified in an about file. The environment and permissions must be the same for all applications.
+
+[cols="1,1,2", options="header"]
+|=======
+|path                            | default      | description
+include::fields/about.adoc[]
+|=======
+
+Other fields can be specified in any filel
+[cols="1,1,2", options="header"]
+|===
+|path                            | default      | description
+include::fields/header.adoc[]
+|===
 
 === The type field
 AuroraConfig has a type field that determine what workflow that should be used when applying an DeploymentSpec to the cluster.
@@ -50,14 +83,6 @@ The current types are available
 TODO: Templates should require a VERSION field if you want to change version in AuroraConsole
 TODO: Templates shoudl require a NAME field that will be prefix of all objects generated
 
-=== How is AuroraConfig parsed
-. given an ApplicationId determine what files to use. 
-. extract a Header from the given files using the HeaderFields
-.. this exposes variables to the next step that can be used as default values
-.. also extracts the variables needed to create the environment
-.. the type field is used to determine the rest of the workflow
-. validate that the header fields are correct
-.
 
 
 === Example configuration for the reference-application
@@ -94,94 +119,72 @@ The complete config is then evaluated as
 include::auroraConfig/reference-full.yaml[] 
 ----
 
+=== Exposing an application via HTTP
+The default behavior is that the application is only visible to other application in the same namespace using
+its server name.
+
+In order to control routes into the application the following fields can be used
+
+[cols="1,1,2", options="header"]
+|===
+|path                           | default      | description
+include::fields/route.adoc[]
+|===
+
 === AuroraConfig fields
-|=======
-|path                           | required   | default      | description 
-|name                           |            | 'fileName'   | The name of the application. All objects created in the cluster will get an app label with this name. Cannot be longer then 40 (alphanumeric -). Note that the default value here is the actual name of the app file.
-include::fields/about.adoc[]
-include::fields/header.adoc[]
 
-|cluster                        | always     |              | What cluster should the application be deployed to. Must be a valid cluster name. 
-|ttl                            |            |              | Set a time duration in format 1d, 12h aso that indicate how long until this application should be deleted
-|permissions/admin              | always |                  | The groups in OpenShift that will have the admin role for the given project. Can either be an array or a space delimitered string. This option must be specified in either global or env file.
-|permissions/view               |  |                        | The groups in OpenShift that will have the view role for the given project. Can either be an array or a space delimitered string. This option must be specified in either global or env file.
-|permissions/adminServiceAccount| |                         | The serviceaccounts in OpenShift that will have the admin role for the given project. Can either be an array or a space delimitered string. This option must be specified in either global or env file.
-|route                          |            | false        | Toggle to expose application via HTTP. Routes can also be configured with expanded syntax. And routeDefault can be set for all routes. See below.
-|route/<name>/name              |            | 'fileName'   | The name part of the URL. 
-|route/<name>/affiliation       |            | 'affiliation'| The affiliation part of the URL
-|route/<name>/env               |            | 'envName'    | The env part of the URL
-|route/<name>/separator         |            | -            | Inserted between name/affilation/env to generate a route URL. 
-|route/<name>/path              |            |              | Set to create a path based route. You should use the same name/affiliation/env/seperator combination for all path based routes to get the same URL
-|route/<name>/annotations/<key> |            |              | Set annotations for a given route. Note that you should use | instead of / in annotation keys. so  'haproxy.router.openshift.io|balance'. See https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#route-specific-annotations[route annotations] for some options. 
-|routeDefaults/name              |            | 'fileName'   | Set the default name for all routes. Specict this in base file to affect all applications or in env file to affect env
-|routeDefaults/affiliation       |            | 'affiliation'| Set the default affiliation part of the URL. This can be used if you want the URL to indicate something else then the ops affiliation
-|routeDefaults/env               |            | 'envName'    | Set the default env part of the URL. This can be used to set to empty in production
-|routeDefaults/separator         |            | -            | Inserted between name/affilation/env to generate a route URL. 
-|routeDefaults/path              |            |              | Set to create a path based route. You should use the same name/affiliation/env/seperator combination for all path based routes to get the same URL
-|routeDefaults/annotations/<key> |            |              | Set annotations for a given route. Note that you should use | instead of / in annotation keys. so  'haproxy.router.openshift.io|balance'. See https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#route-specific-annotations[route annotations] for some options. 
-|webseal                        |            | false        | Toggle to expose application through WebSeal. Only valid if you have webseal enabled in the Aurora API. 
-|webseal/host                   |            | $name-$namespace | Set this to change the default prefix in WebSeal
-|webseal/roles                  |            |              | Set roles required to access this route. This can either be set as CSV or as an array of strings
-|secretVault                    |            |              | Add files in the given vault as a secret to the application. If there is a latest.properties file in the secret it will be sourced as ENV
-|secretVault/name               |            |              | Works like setting 'secretValue'
-|secretVault/keys               |            |              | Filter the keys in the latest.properties secret on the values in this array.
-|releaseTo                      |            |  false       | Used to release a given version as a shared tag in the docker registry. Other env can then use it in 'version'. NB! Must be manually updated with ao/console
-|database | | | Toggle this to add a database with $name to your application. Only valid if dbh is enabled in Aurora API.
-|database/<name> | | | If you want to add multiple databases specify a name for each. Set the value to 'auto' for auto generation or a given ID to pin to it.
-|config/<key>  | | | Specify config values as strings. Will be env vars in application. 
-|mounts/<name>/type | | | Specify type of mount. Can either be Secret/ConfigMap/PVC. 
-|mounts/<name>/path | | | Path in the container where the mount will be mounted
-|mounts/<name>/secretVault | | | The secret vault to mount if type is Secret
-|mounts/<name>/content | | | The content for the ConfigMap if applicable. Can be specified as JSON
-|mounts/<name>/exist | | | Toggle to true to indicate that the secret already exist and should just be mounted
-|=======
+[cols="1,1,2", options="header"]
+|===
+|path                           | default      | description
+|ttl                            |              | Set a time duration in format 1d, 12h aso that indicate how long until this application should be deleted
+|secretVault                    |              | Add files in the given vault as a secret to the application. If there is a latest.properties file in the secret it will be sourced as ENV
+|secretVault/name               |              | Works like setting 'secretValue'
+|secretVault/keys               |              | Filter the keys in the latest.properties secret on the values in this array.
+|database                       |              | Toggle this to add a database with $name to your application. Only valid if dbh is enabled in Aurora API.
+|database/<name>                |              | If you want to add multiple databases specify a name for each. Set the value to 'auto' for auto generation or a given ID to pin to it.
+|config/<key>                   |              | Specify config values as strings. Will be env vars in application.
+|mounts/<name>/type             |              | Specify type of mount. Can either be Secret/ConfigMap/PVC.
+|mounts/<name>/path             |              | Path in the container where the mount will be mounted
+|mounts/<name>/secretVault      |              | The secret vault to mount if type is Secret
+|mounts/<name>/content          |              | The content for the ConfigMap if applicable. Can be specified as JSON
+|mounts/<name>/exist            |              | Toggle to true to indicate that the secret already exist and should just be mounted
+|*version*                      |              | Version of the application to run. Can be set to any of the valid version strategies. TODO: Link to them |
+|pause                          | false        | Toggle to pause an application. This will scale it down to 0 and add a label showing it is paused.
+|certificate                    | false        | Toggle to add a certificate with CommonName $groupId.$artifactId. Only valid if STS feature is enabled in Aurora API
+|certificate/commonName         |              | Generate an STS certificate with the given commonName. Only valid if STS feature is enabled in Aurora API
+|replicas                       | 1            | Number of replicas of this application to run.
+|alarm                          | true         | Toggle off to disable alarm for this application. Will be ignored in production clusters.
+|===
 
-|=======
-|path                           | required   | default      | description 
-|pause                          |            | false        | Toggle to pause an application. This will scale it down to 0 and add a label showing it is paused.
-|certificate                    |            | false        | Toggle to add a certificate with CommonName $groupId.$artifactId. Only valid if STS feature is enabled in Aurora API
-|certificate/commonName         |            |              | Generate an STS certificate with the given commonName. Only valid if STS feature is enabled in Aurora API
-|debug                          |            | false        | Toggle to enable remote debugging on port 5005. Port forward this port locally and setup remote debugging in your Java IDE.
-|alarm                          |            | true         | Toggle off to disable alarm for this application. Will be ignored in production clusters.
-|deployStrategy/type            |            | rolling      | Specify type of deployment, either rolling or recreate
-|deployStrategy/timeout         |            | 180          | Set timeout value in seconds for deployment process
-|resources/cpu/min              |            | 100m         | Specify minimum/request cpu. 1000m is 1 core.
-|resources/cpu/max              |            | 2000m        | Specify maximum/limit cpu. 
-|resources/memory/min           |            | 128Mi        | Specify minimum/request memory.
-|resources/memory/max           |            | 512Mi        | Specify maximum/limit memory. By default 25% of this will be set to XMX in java.
-|replicas                       |            | 1            | Number of replicas of this application to run. 
-|groupId                        | for deploy |              | groupId for your application.  Max 200 length
-|artifactId                     |            | 'fileName'   | artifactId for your application. Max 50 length
-|version                        | for deploy |              | Version of the application to run. Can be set to any of the valid version strategies. TODO: Link to them
-|splunkIndex                    |            |              | Set to a valid splunk-index to log to splunk. Only valid if splunk is enabled in the Aurora API
-|serviceAccount                 |            |              | Set to an existing serviceAccount if you need special privileges
-|prometheus                     |            | true         | Toggle to false if application do not have Prometheus metrics
-|prometheus/path                |            | /prometheus  | Change the path of where prometheus is exposed
-|prometheus/port                |            | 8081         | Change the port of where prometheus is exposed
-|management                     |            | true         | Toggle of if your application does not expose an management interface
-|management/path                |            | /actuator    | Change the path of where the management interface is exposed
-|management/port                |            | 8081         | Change the port of where the management interface is exposed
-|readiness                      |            | true         | Toggle to false to turn off default readiness check
-|readiness/path                 |            |              | Set to a path to do a GET request to that path as a readiness check
-|readiness/port                 |            | 8080         | If no path present readiness will check if this port is open
-|readiness/delay                |            | 10           | Number of seconds to wait before running readiness check 
-|readiness/timeout              |            | 1            | Number of seconds timeout before giving up readiness
-|liveness                       |            | false        | Toggle to true to enable liveness check
-|liveness/path                  |            |              | Set to a path to do a GET request to that path as a liveness check
-|liveness/port                  |            | 8080         | If no path present liveness will check if this port is open
-|liveness/delay                 |            | 10           | Number of seconds to wait before running livenss check 
-|liveness/timeout               |            | 1            | Number of seconds timeout before giving up livenss
-
-|=======
-|path                           | required   | default      | description 
-|builder/name                   |            | architect    | Change the builder used to build development flow
-|builder/version                |            | 1            | Change the builder version to use
-|baseImage/name                 |            |              | For applicationPlatform java the default is flange, for web it is wrench
-|baseImage/version              |            |              | For applicationPlatform java the default is 8 for web it is 0
+|===
+|path                           | default      | description
+|releaseTo                      |              | Used to release a given version as a shared tag in the docker registry. Other env can then use it in 'version'. NB! Must be manually updated with ao/console
+|debug                          | false        | Toggle to enable remote debugging on port 5005. Port forward this port locally and setup remote debugging in your Java IDE.
+|deployStrategy/type            | rolling      | Specify type of deployment, either rolling or recreate
+|deployStrategy/timeout         | 180          | Set timeout value in seconds for deployment process
+|resources/cpu/min              | 100m         | Specify minimum/request cpu. 1000m is 1 core.
+|resources/cpu/max              | 2000m        | Specify maximum/limit cpu.
+|resources/memory/min           | 128Mi        | Specify minimum/request memory.
+|resources/memory/max           | 512Mi        | Specify maximum/limit memory. By default 25% of this will be set to XMX in java.
+|groupId                        |              | groupId for your application.  Max 200 length. Required if deploy/development
+|artifactId                     | 'fileName'   | artifactId for your application. Max 50 length
+|splunkIndex                    |              | Set to a valid splunk-index to log to splunk. Only valid if splunk is enabled in the Aurora API
+|serviceAccount                 |              | Set to an existing serviceAccount if you need special privileges
+|prometheus                     | true         | Toggle to false if application do not have Prometheus metrics
+|prometheus/path                | /prometheus  | Change the path of where prometheus is exposed
+|prometheus/port                | 8081         | Change the port of where prometheus is exposed
+|management                     | true         | Toggle of if your application does not expose an management interface
+|management/path                | /actuator    | Change the path of where the management interface is exposed
+|management/port                | 8081         | Change the port of where the management interface is exposed
+|readiness                      | true         | Toggle to false to turn off default readiness check
+|readiness/path                 |              | Set to a path to do a GET request to that path as a readiness check
+|readiness/port                 | 8080         | If no path present readiness will check if this port is open
+|readiness/delay                | 10           | Number of seconds to wait before running readiness check
+|readiness/timeout              | 1            | Number of seconds timeout before giving up readiness
+|liveness                       | false        | Toggle to true to enable liveness check
+|liveness/path                  |              | Set to a path to do a GET request to that path as a liveness check
+|liveness/port                  | 8080         | If no path present liveness will check if this port is open
+|liveness/delay                 | 10           | Number of seconds to wait before running livenss check
+|liveness/timeout               | 1            | Number of seconds timeout before giving up livenss
 
 
-|=======
-|path                           | required   | default      | description 
-|templateFile                   | localTemplate |           | set the location of a local tempalte file. It should be in the templates subfolder
-|parameters/<KEY>               |            |              | set value for a paramter in the template. 
-|template                       | template   |              | Name of template in default namespace to use
