@@ -1,0 +1,21 @@
+---
+#about
+schemaVersion: v1
+affiliation: paas
+permissions : 
+  group : [PAAS_OPS]
+
+---
+#myapp
+groupId: our.group
+version: 1
+type: deploy
+
+---
+#env/about
+cluster: utv
+
+---
+#env/myapp
+
+#this file is empty but must be there

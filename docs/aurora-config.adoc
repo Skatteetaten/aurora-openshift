@@ -4,6 +4,12 @@ Aurora Config is an opinoinated way of configuring how namespaces and applicatio
 
 Config files are written either as Json or Yaml. All the examples will use YAML since it is easier on the eyes. 
 
+=== Dictionary
+AuroraConfig: A set of files that share the same schemaVersion and affiliation. Files are either json or yaml. 
+LocalTemplate: An AuroraConfig can contain a templates folder with OpenShift template files.
+Template: Other templates are referenced from the default namespace in your cluster.
+ApplicationId: Indentify an Application. Contains the name of the application and an environment(affiliation and env name)
+DeploymentSpec: Result of applying an ApplicationId to a given AuroraConfig
 
 === Files
 Given that you have an application with name 'reference' in the environment 'dev' the following files will be present
@@ -17,6 +23,9 @@ Note that the suffix of the file can be either json or yaml
 |dev/foo.yaml   | app    | Instructons on how to deploy the application 'reference' in 'dev'
 |=======
 
+In order to generate an DeploymentSpec for a given ApplicationId files are read in the order specified above and merged together. 
+Information about what file contains what instruction is recorded so that it is possible to get a birds eye view over a DeploymentSpec and where the different instructions come from.
+
 It is possible to change the base and env file in a given app file if you want to compose your configuration.
 
 .utv/reference.yaml
@@ -27,6 +36,18 @@ envFile: about-template.yaml
 ----
 
 In this scenario 'foo.yaml' would be used instead of 'reference.yaml' as the base file and the 'about-template.yaml' file would be used instead of 'about.yaml'
+
+
+=== The type field
+AuroraConfig has a type field that determine what workflow that should be used when applying an DeploymentSpec to the cluster.
+
+The current types are available
+ - Deploy: Deploy a pre build image in a namespace. 
+ - Development: Set up an application in an environment that can be built using the provided BuildConfig. Using binary builds for local development is the most used here
+ - Template: Deploy an template from the OpenShift cluster in a namespace
+ - LocalTemplate: Deploy an template from the templates folder of the AuroraConfig
+
+TODO: Templates should require a VERSION field if you want to change version in AuroraConsole
 
 === Example configuration for the reference-application
 Below is an example of how you could configure an instance of the https://github.com/skatteetaten/openshift-reference-springboot-server[reference application]
@@ -71,6 +92,9 @@ include::auroraConfig/reference-full.yaml[]
 |type                           |            | deploy       | What type of flow does this application follow. Options here are [deploy, development, template, localTemplate]
 |schemaVersion                  | always     |              | All files in a given AuroraConfig must share a schemaVersion. For now only v1 is supported, it is here incase we need to break compatability
 |envName                        |            | 'folderName' | Change the name of the project. Note that the default value here is the actual name of the folder where the app file is. This option must be specified in either global or env file.
+|env/name                       |            |              | An alias for envName 
+|env/ttl                        |            |              | Set a time duration in format 1d, 12h aso that indicate how long until this namespace should be deleted
+|ttl                            |            |              | Set a time duration in format 1d, 12h aso that indicate how long until this application should be deleted
 |permissions/admin              | always |                  | The groups in OpenShift that will have the admin role for the given project. Can either be an array or a space delimitered string. This option must be specified in either global or env file.
 |permissions/view               |  |                        | The groups in OpenShift that will have the view role for the given project. Can either be an array or a space delimitered string. This option must be specified in either global or env file.
 |permissions/adminServiceAccount| |                         | The serviceaccounts in OpenShift that will have the admin role for the given project. Can either be an array or a space delimitered string. This option must be specified in either global or env file.
@@ -81,6 +105,12 @@ include::auroraConfig/reference-full.yaml[]
 |route/<name>/separator         |            | -            | Inserted between name/affilation/env to generate a route URL. 
 |route/<name>/path              |            |              | Set to create a path based route. You should use the same name/affiliation/env/seperator combination for all path based routes to get the same URL
 |route/<name>/annotations/<key> |            |              | Set annotations for a given route. Note that you should use | instead of / in annotation keys. so  'haproxy.router.openshift.io|balance'. See https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#route-specific-annotations[route annotations] for some options. 
+|routeDefaults/name              |            | 'fileName'   | Set the default name for all routes. Specict this in base file to affect all applications or in env file to affect env
+|routeDefaults/affiliation       |            | 'affiliation'| Set the default affiliation part of the URL. This can be used if you want the URL to indicate something else then the ops affiliation
+|routeDefaults/env               |            | 'envName'    | Set the default env part of the URL. This can be used to set to empty in production
+|routeDefaults/separator         |            | -            | Inserted between name/affilation/env to generate a route URL. 
+|routeDefaults/path              |            |              | Set to create a path based route. You should use the same name/affiliation/env/seperator combination for all path based routes to get the same URL
+|routeDefaults/annotations/<key> |            |              | Set annotations for a given route. Note that you should use | instead of / in annotation keys. so  'haproxy.router.openshift.io|balance'. See https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#route-specific-annotations[route annotations] for some options. 
 |webseal                        |            | false        | Toggle to expose application through WebSeal. Only valid if you have webseal enabled in the Aurora API. 
 |webseal/host                   |            | $name-$namespace | Set this to change the default prefix in WebSeal
 |webseal/roles                  |            |              | Set roles required to access this route. This can either be set as CSV or as an array of strings
