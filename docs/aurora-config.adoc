@@ -61,7 +61,7 @@ Some of the header fields must be specified in an about file. The environment an
 [cols="1,1,2", options="header"]
 |=======
 |path                            | default      | description
-include::fields/about.adoc[]
+include::fields/header-about.adoc[]
 |=======
 
 Other fields can be specified in any filel
@@ -71,7 +71,7 @@ Other fields can be specified in any filel
 include::fields/header.adoc[]
 |===
 
-=== The type field
+==== The type field
 AuroraConfig has a type field that determine what workflow that should be used when applying an DeploymentSpec to the cluster.
 
 The current types are available
@@ -84,42 +84,38 @@ TODO: Templates should require a VERSION field if you want to change version in 
 TODO: Templates shoudl require a NAME field that will be prefix of all objects generated
 
 
+=== Extracting DeploymentSpec
 
-=== Example configuration for the reference-application
-Below is an example of how you could configure an instance of the https://github.com/skatteetaten/openshift-reference-springboot-server[reference application]
+==== Provisioning resources for NTA
 
-.about.yaml
-[source,yaml]
-----
-include::auroraConfig/about.yaml[] 
-----
+[cols="1,1,2", options="header"]
+|===
+|path                           | default      | description
+include::fields/ntaProvisioning.adoc[]
+|===
+
+TODO: Add bigIp
+
+==== Generate application from Delivery Bundle
+
+If you use the type deploy og development the application objects are generated using a Kotlin DSL from the following fields
+
+[cols="1,1,2", options="header"]
+|===
+|path                           | default      | description
+include::fields/deliveryBundle.adoc[]
+|===
+
+==== Generate application from template
+
+[cols="1,1,2", options="header"]
+|===
+|path                           | default      | description
+include::fields/template.adoc[]
+|===
 
 
-.reference.yaml
-[source,yaml]
-----
-include::auroraConfig/reference.yaml[] 
-----
-
-.dev/about/reference.yaml
-[source,yaml]
-----
-include::auroraConfig/dev/about.yaml[] 
-----
-
-.dev/about/reference.yaml
-[source,yaml]
-----
-include::auroraConfig/dev/reference.yaml[] 
-----
-
-The complete config is then evaluated as
-[source,yaml]
-----
-include::auroraConfig/reference-full.yaml[] 
-----
-
-=== Exposing an application via HTTP
+==== Exposing an application via HTTP
 The default behavior is that the application is only visible to other application in the same namespace using
 its server name.
 
@@ -136,55 +132,39 @@ include::fields/route.adoc[]
 [cols="1,1,2", options="header"]
 |===
 |path                           | default      | description
-|ttl                            |              | Set a time duration in format 1d, 12h aso that indicate how long until this application should be deleted
-|secretVault                    |              | Add files in the given vault as a secret to the application. If there is a latest.properties file in the secret it will be sourced as ENV
-|secretVault/name               |              | Works like setting 'secretValue'
-|secretVault/keys               |              | Filter the keys in the latest.properties secret on the values in this array.
-|database                       |              | Toggle this to add a database with $name to your application. Only valid if dbh is enabled in Aurora API.
-|database/<name>                |              | If you want to add multiple databases specify a name for each. Set the value to 'auto' for auto generation or a given ID to pin to it.
-|config/<key>                   |              | Specify config values as strings. Will be env vars in application.
-|mounts/<name>/type             |              | Specify type of mount. Can either be Secret/ConfigMap/PVC.
-|mounts/<name>/path             |              | Path in the container where the mount will be mounted
-|mounts/<name>/secretVault      |              | The secret vault to mount if type is Secret
-|mounts/<name>/content          |              | The content for the ConfigMap if applicable. Can be specified as JSON
-|mounts/<name>/exist            |              | Toggle to true to indicate that the secret already exist and should just be mounted
-|*version*                      |              | Version of the application to run. Can be set to any of the valid version strategies. TODO: Link to them |
-|pause                          | false        | Toggle to pause an application. This will scale it down to 0 and add a label showing it is paused.
-|certificate                    | false        | Toggle to add a certificate with CommonName $groupId.$artifactId. Only valid if STS feature is enabled in Aurora API
-|certificate/commonName         |              | Generate an STS certificate with the given commonName. Only valid if STS feature is enabled in Aurora API
-|replicas                       | 1            | Number of replicas of this application to run.
-|alarm                          | true         | Toggle off to disable alarm for this application. Will be ignored in production clusters.
-|===
 
 |===
-|path                           | default      | description
-|releaseTo                      |              | Used to release a given version as a shared tag in the docker registry. Other env can then use it in 'version'. NB! Must be manually updated with ao/console
-|debug                          | false        | Toggle to enable remote debugging on port 5005. Port forward this port locally and setup remote debugging in your Java IDE.
-|deployStrategy/type            | rolling      | Specify type of deployment, either rolling or recreate
-|deployStrategy/timeout         | 180          | Set timeout value in seconds for deployment process
-|resources/cpu/min              | 100m         | Specify minimum/request cpu. 1000m is 1 core.
-|resources/cpu/max              | 2000m        | Specify maximum/limit cpu.
-|resources/memory/min           | 128Mi        | Specify minimum/request memory.
-|resources/memory/max           | 512Mi        | Specify maximum/limit memory. By default 25% of this will be set to XMX in java.
-|groupId                        |              | groupId for your application.  Max 200 length. Required if deploy/development
-|artifactId                     | 'fileName'   | artifactId for your application. Max 50 length
-|splunkIndex                    |              | Set to a valid splunk-index to log to splunk. Only valid if splunk is enabled in the Aurora API
-|serviceAccount                 |              | Set to an existing serviceAccount if you need special privileges
-|prometheus                     | true         | Toggle to false if application do not have Prometheus metrics
-|prometheus/path                | /prometheus  | Change the path of where prometheus is exposed
-|prometheus/port                | 8081         | Change the port of where prometheus is exposed
-|management                     | true         | Toggle of if your application does not expose an management interface
-|management/path                | /actuator    | Change the path of where the management interface is exposed
-|management/port                | 8081         | Change the port of where the management interface is exposed
-|readiness                      | true         | Toggle to false to turn off default readiness check
-|readiness/path                 |              | Set to a path to do a GET request to that path as a readiness check
-|readiness/port                 | 8080         | If no path present readiness will check if this port is open
-|readiness/delay                | 10           | Number of seconds to wait before running readiness check
-|readiness/timeout              | 1            | Number of seconds timeout before giving up readiness
-|liveness                       | false        | Toggle to true to enable liveness check
-|liveness/path                  |              | Set to a path to do a GET request to that path as a liveness check
-|liveness/port                  | 8080         | If no path present liveness will check if this port is open
-|liveness/delay                 | 10           | Number of seconds to wait before running livenss check
-|liveness/timeout               | 1            | Number of seconds timeout before giving up livenss
+
+=== Example configuration for the reference-application
+Below is an example of how you could configure an instance of the https://github.com/skatteetaten/openshift-reference-springboot-server[reference application]
+
+.about.yaml
+[source,yaml]
+----
+include::auroraConfig/about.yaml[]
+----
 
 
+.reference.yaml
+[source,yaml]
+----
+include::auroraConfig/reference.yaml[]
+----
+
+.dev/about/reference.yaml
+[source,yaml]
+----
+include::auroraConfig/dev/about.yaml[]
+----
+
+.dev/about/reference.yaml
+[source,yaml]
+----
+include::auroraConfig/dev/reference.yaml[]
+----
+
+The complete config is then evaluated as
+[source,yaml]
+----
+include::auroraConfig/reference-full.yaml[]
+----
