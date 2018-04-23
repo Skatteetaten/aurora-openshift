@@ -1,0 +1,37 @@
+@startuml
+
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+ actor "Tax Officer" as TaxOfficer
+
+actor "External User" as user
+
+node Server
+
+rectangle App
+
+App -left-> Server: runs on
+Developer --> App
+
+database Oracle
+database Splunk
+
+artifact crt
+
+
+TaxOfficer -down0-> App
+user -down0)-> App
+crt -up-> App : application cert
+Splunk <-up- App : logs
+Oracle -up-> App : database
+
+
+
+
+
+
+
+
+@enduml

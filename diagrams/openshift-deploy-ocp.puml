@@ -1,0 +1,48 @@
+@startuml
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+database DockerRegistry [
+DockerRegistry
+----
+version: 1.2.3
+]
+
+
+component DeploymentConfig as DC
+
+component IS [
+ImageStream
+---
+version: 1
+]
+
+IS --> DC  : trigger deploy on new image
+
+component ReplicationController as RC
+
+
+
+component Pod [
+Pod
+---
+name: app-1-xxx
+]
+
+DC -right-> RC: rollout app-1
+RC -right-> Pod: start
+
+
+storage app [
+app
+---
+version=1.2.3
+]
+
+Pod -up-> app : contains
+
+IS -right-> DockerRegistry: scheduled import
+
+@enduml

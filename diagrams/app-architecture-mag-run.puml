@@ -1,0 +1,32 @@
+@startuml
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+actor DevOps as Developer
+
+rectangle App
+
+rectangle App2
+
+rectangle LookupService
+
+rectangle OpsBoard
+
+Developer --> App : 1 /call
+
+Developer --> OpsBoard : 2. check health
+OpsBoard --> App : 2.1/health
+App --> LookupService : ping, recurring
+OpsBoard -left-> LookupService : status
+
+App --> LookupService : 1.1. get endpoints for urn::urn
+App -up-> App2 : 1.2. call service
+
+
+
+
+
+
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+actor User
+
+rectangle AuroraJenkins
+queue buildQueue
+node Server
+database Git
+database Nexus
+card Job
+
+Server --> AuroraJenkins : runs on
+User --> AuroraJenkins : 1.1 create job
+User --> AuroraJenkins : 1.2 configure Job
+
+User --> Git : 2.1 push
+AuroraJenkins -up-> Git : 2.2 poll
+
+AuroraJenkins --> buildQueue: 2.3 add to queue
+
+buildQueue -right-> Job : 2.4 run
+
+file DeliveryBundle.zip
+Job -up-> DeliveryBundle.zip : produce
+DeliveryBundle.zip -up-> Nexus: pushed to
+
+
+
+
+
+
+@enduml
