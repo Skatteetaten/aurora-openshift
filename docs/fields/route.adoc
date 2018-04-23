@@ -1,14 +1,8 @@
-|route                          | false        | Toggle to expose application via HTTP. Routes can also be configured with expanded syntax. And routeDefault can be set for all routes. See below.
-|route/<routename>/name         | $fileName    | For a given routeName set the name part of the URL.
-|route/<routename>/affiliation  | $affiliation | The affiliation part of the URL
-|route/<routename>/env          | $envName      | The env part of the URL
-|route/<routename>/separator    | -            | Inserted between name/affilation/env to generate a route URL.
-|route/<routename>/path         |              | Set to create a path based route. You should use the same name/affiliation/env/seperator combination for all path based routes to get the same URL
-|route/<routename>/annotations/<key> |              | Set annotations for a given route. Note that you should use | instead of / in annotation keys. so  'haproxy.router.openshift.io|balance'. See https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#route-specific-annotations[route annotations] for some options.
-|routeDefaults/name             | $name>       | Set the default name for all routes. Specict this in base file to affect all applications or in env file to affect env
-|routeDefaults/affiliation      | $affiliation |  Set the default affiliation part of the URL. This can be used if you want the URL to indicate something else then the ops affiliation
-|routeDefaults/env              | $envName     | Set the default env part of the URL. This can be used to set to empty in production
-|routeDefaults/separator        | -            | Inserted between name/affilation/env to generate a route URL.
-|routeDefaults/path             |              | Set to create a path based route. You should use the same name/affiliation/env/seperator combination for all path based routes to get the same URL
-|routeDefaults/annotations/<key>|              | Set annotations for a given route. Note that you should use | instead of / in annotation keys. so  'haproxy.router.openshift.io|balance'. See https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#route-specific-annotations[route annotations] for some options.
+|route                               | false                      | Toggle to expose application via HTTP. Routes can also be configured with expanded syntax. And routeDefault can be set for all routes. See below.
+|route/<routename>/host              |                            | Set the host of a route according to the given pattern. 
+|route/<routename>/path              |                            | Set to create a path based route. You should use the same name/affiliation/env/seperator combination for all path based routes to get the same URL
+|route/<routename>/annotations/<key> |                            | Set annotations for a given route. Note that you should use | instead of / in annotation keys. so  'haproxy.router.openshift.io|balance'. See https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#route-specific-annotations[route annotations] for some options.
+|routeDefaults/host                  | @name@-@affiliation@-@env@ | Set the host of a route according to the given pattern. 
+|routeDefaults/path                  |                            | Set to create a path based route. You should use the same name/affiliation/env/seperator combination for all path based routes to get the same URL
+|routeDefaults/annotations/<key>     |                            | Set annotations for a given route. Note that you should use | instead of / in annotation keys. so  'haproxy.router.openshift.io|balance'. See https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#route-specific-annotations[route annotations] for some options.
 

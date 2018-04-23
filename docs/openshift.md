@@ -15,6 +15,7 @@ deploy our applications, and our guidelines and requirements to applications usi
 
 
 # A Short History
+Todo: Is this timeline correct? Did we really start in late 2014? 
 
 The work on what would become the Aurora OpenShift Platform started late in 2014 in the wake of a major project to
 modernize the handling of the foundational data for most tax calculations in Norway. The project identified during its
@@ -42,6 +43,7 @@ a select set of them became collectivly known as the Aurora OpenShift Platform.
 In December 2016 it was decided that as much possible of the Aurora OpenShift Platform should be open sourced under
 an APL 2.0 compatible license.
 
+TODO: Went into production 1. January 2017
 
 # Requirements for the Aurora OpenShift Platform
 
@@ -102,6 +104,9 @@ applications across teams and environments.
  * [Architect](https://github.com/Skatteetaten/architect): A Docker image that implements the image build process for all our supported runtime technologies
  * Base Images: A set of Alpine Linux based Docker Images that all our applications are built from. [wingnut](https://github.com/Skatteetaten/wingnut) and [wrench](https://github.com/Skatteetaten/wrench)
 
+TODO: Flange
+
+
 
 The coming sections will describe these components in more detail.
 
@@ -131,6 +136,8 @@ Coding an application targeted at the Aurora OpenShift Platform follows closely 
 Additionally we prefer that the applications are built via Jenkins and that the source repository of the application
 contains a Jenkinsfile that describes the build process. Ideally, the Jenkinsfile uses our common Jenkins pipeline
 scripts (making the Jenkinsfile less than 10 lines of code).
+
+TODO: we do not prefer Jenkins, it is part of the plattform
 
 We provide a [Tailored Service Template](https://www.thoughtworks.com/radar/techniques/tailored-service-template)  [openshift-reference-springboot-server](https://github.com/Skatteetaten/openshift-reference-springboot-server) for a
 standard application that fulfill all these demands that teams building new applications can use to get started. 
@@ -393,3 +400,5 @@ is required to implement our proprietary Management Interface (which is in part 
 Information from the Management Interface of the applications in combination with information we collect about the
 applications from OpenShift via the OpenShift API collectively contributes to an aggregated application status that we
 call the AuroraStatus.
+TODO: Mokey
+

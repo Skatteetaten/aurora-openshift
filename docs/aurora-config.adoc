@@ -49,6 +49,7 @@ envFile: about-template.yaml
 
 In this scenario 'foo.yaml' would be used instead of 'reference.yaml' as the base file and the 'about-template.yaml' file would be used instead of 'about.yaml'
 
+
 === Header
 Some instructions are read as a header. This is done in order to provide sane defaults for the rest of the process.
 
@@ -66,6 +67,21 @@ Other fields can be specified in any file
 |path                            | default      | description
 include::fields/header.adoc[]
 |===
+
+=== Substitution
+Some fields fromt header are available as substitutions when specifying the rest of the configuration
+
+. affiliation
+. cluster
+. env
+. name
+. segment
+
+In order to include these into a field surround them with '@'. An example
+```
+config/cluster : "@cluster@"
+```
+This will create a config value with the actual value of the cluster.
 
 === Extracting DeploymentSpec
 
