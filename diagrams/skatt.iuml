@@ -1,3 +1,161 @@
+skinparam database {
+    BackgroundColor #88D3E7
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+skinparam queue {
+    BackgroundColor #E4E48E
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+
+skinparam component {
+    BackgroundColor #E4E48E
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+
+skinparam artifact {
+    BackgroundColor #fdf6e3
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+skinparam folder {
+    BackgroundColor #fdf6e3
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+
+skinparam interface {
+    BackgroundColor #fdf6e3
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+
+skinparam node {
+    BackgroundColor #fdf6e3
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+
+skinparam actor {
+    BackgroundColor #fdf6e3
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+
+skinparam frame {
+    BackgroundColor #fdf6e3
+    BorderColor gray
+    ArrowColor black
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
+
+
+
+skinparam rectangle {
+    BackgroundColor #FFD086
+    BorderColor gray
+    ArrowColor black
+	  roundCorner 25
+
+    BackgroundColor<<OS1>> #FFD086
+    BackgroundColor<<OS2>> #88D3E7
+    BackgroundColor<<OS3>> #E4E48E
+    BackgroundColor<<OS4>> #DF4661
+
+    BackgroundColor<<AOT>> #FFD086
+    BackgroundColor<<AOS>> #88D3E7
+    BackgroundColor<<SITJ>> #E4E48E
+    BackgroundColor<<ANNET>> #DF4661
+}
 
 
 skinparam state {

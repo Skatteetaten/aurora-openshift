@@ -1,0 +1,38 @@
+@startuml
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+actor User as Developer
+
+rectangle App
+
+database Git
+rectangle AuroraKonsole
+rectangle ao
+rectangle AuroraApi
+
+file AuroraConfig
+
+AuroraConfig <-up- Git: provides
+
+component kubernetes
+
+Developer --> AuroraKonsole : 2. upgrade
+Developer --> ao : 1. deploy
+
+ao --> AuroraApi : 1.1 deploy
+AuroraKonsole --> AuroraApi: 2.1  deploy
+AuroraApi -left-> AuroraConfig : 1.2. read
+AuroraApi -right-> kubernetes : 1.4. add/update objects
+kubernetes -up-> App : 1.5 deploy
+
+
+
+
+
+
+
+
+@enduml

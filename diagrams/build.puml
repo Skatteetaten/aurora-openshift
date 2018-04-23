@@ -1,0 +1,62 @@
+@startuml
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+actor User
+
+
+database DockerRegistry
+database Nexus
+
+storage  architect [
+aurora/architect
+---
+1.8.0
+]
+
+storage wrench [
+aurora/wrench
+---
+8.162.1
+]
+
+
+component BuildConfig [
+BuildConfig
+--
+name=app
+version=1.2.3
+]
+
+storage alpine [
+alpine
+--
+3.6
+]
+
+
+storage app [
+app
+---
+latest
+1
+1.2
+1.2.3
+1.2.3-b1.8.0-wrench-8.162.1
+]
+User --> BuildConfig: 1. startBuild name=app version=1.2.3
+
+BuildConfig -right-> architect: 2. CustomBuilder
+architect --> Nexus: 3. fetch DeliveryBundle from
+architect -right-> wrench: 4. use baseImage
+architect --> app : 5. produce
+
+architect -up-> alpine : BASE
+wrench -up-> alpine : BASE
+
+wrench --> DockerRegistry: contains
+architect --> DockerRegistry: contains
+app -right-> DockerRegistry: pushed to
+@enduml

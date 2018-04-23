@@ -1,0 +1,43 @@
+@startuml
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+actor User as Developer
+
+rectangle App
+
+rectangle DeployTool as NodeManager
+
+database Nexus
+
+folder DeliveryBundle.zip [
+ application-spec.yaml
+ lib/app.jar
+]
+
+folder git [
+application.yaml
+]
+
+Nexus -left-> DeliveryBundle.zip : provides
+
+Developer -right-> NodeManager : 1. deploy
+Developer -right-> WebDeploy : 2. upgrade
+
+WebDeploy --> NodeManager : 2.1 deploy
+NodeManager -left-> git : 1.1. read
+NodeManager -down-> Nexus : 1.2. get DeliveryBundle
+NodeManager -right-> App : 1.3. deploy
+
+rectangle LookupService
+App --> LookupService : 1.4.register
+
+
+
+
+
+
+
+@enduml

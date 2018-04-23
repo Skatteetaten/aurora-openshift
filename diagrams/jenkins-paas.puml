@@ -1,0 +1,40 @@
+@startuml
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+actor User
+
+storage container as Server
+
+
+database Nexus
+database DockerRegistry
+rectangle "Jenkins Control Plane" as master
+rectangle "Jenkins Node" as slave
+
+
+slave -right-> master : swarm plugin
+database Git
+card Job
+
+Server --> master : runs in
+Server --> slave : runs in
+User --> slave: 3. scale up
+User --> master: 1. add bitbucket project
+User --> Git :  2.commit
+Git --> master : 2.1 push event
+
+master -right-> Job: 2.2 run
+
+
+file DeliveryBundle.zip
+storage DockerImage
+Job --> DeliveryBundle.zip : 2.3 produce
+Job -right-> DockerImage: 2.4 build
+DeliveryBundle.zip -right-> Nexus: pushed to
+DockerImage -up-> DockerRegistry : pushed to
+
+
+@enduml
