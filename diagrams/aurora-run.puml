@@ -1,0 +1,25 @@
+@startuml
+scale 600 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+database Prometheus
+storage App
+
+rectangle AuroraApi
+
+component kubernetes
+
+rectangle Wallboard
+Wallboard --> AuroraApi : read AURORA_STATUS
+
+
+App <.. AuroraApi : scrape
+App -left-> kubernetes : exist in
+kubernetes <-up- AuroraApi : scrape
+Prometheus .down.> App : metrics
+AuroraApi -right-> Prometheus : AURORA_STATUS
+
+
+@enduml

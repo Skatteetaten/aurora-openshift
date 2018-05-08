@@ -1,0 +1,36 @@
+@startuml
+scale 600 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+
+storage App
+
+database Git
+rectangle AuroraKonsole
+rectangle AO
+rectangle AuroraApi
+
+rectangle Jenkins
+file AuroraConfig
+
+AuroraConfig <-down- Git: provides
+
+Jenkins --> AuroraApi : use
+component kubernetes
+
+AO --> AuroraApi :  use
+AuroraKonsole --> AuroraApi:   use
+AuroraApi -left-> AuroraConfig :  extract
+AuroraApi -down-> kubernetes : add/update objects
+kubernetes -right-> App : deploy
+
+kubernetes -left-> Git: deployResult
+
+
+
+
+
+
+@enduml

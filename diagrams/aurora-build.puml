@@ -1,10 +1,8 @@
 @startuml
-scale 900 height
+scale 600 height
 !include skatt.iuml
 skinparam  BackgroundColor white
 
-
-actor User
 
 
 database DockerRegistry
@@ -30,12 +28,6 @@ name=app
 version=1.2.3
 ]
 
-storage alpine [
-alpine
---
-3.6
-]
-
 
 storage app [
 app
@@ -46,15 +38,11 @@ latest
 1.2.3
 1.2.3-b1.8.0-flange-8.162.1
 ]
-User --> BuildConfig: 1. startBuild name=app version=1.2.3
 
-BuildConfig -right-> architect: 2. CustomBuilder
-architect --> Nexus: 3. fetch DeliveryBundle from
-architect -right-> flange: 4. use baseImage
-architect --> app : 5. produce
-
-architect -up-> alpine : BASE
-flange -up-> alpine : BASE
+BuildConfig -down-> architect: use CustomBuilder
+architect -up-> Nexus: fetch DeliveryBundle from
+architect -right-> flange: FROM
+architect --> app : produce
 
 flange --> DockerRegistry: contains
 architect --> DockerRegistry: contains
