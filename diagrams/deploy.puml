@@ -1,0 +1,52 @@
+@startuml
+scale 900 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+database DockerRegistry [
+DockerRegistry
+----
+version: 1.2.3
+]
+
+
+component Service
+component Route
+component DeploymentConfig as DC
+
+component Secret
+
+component IS [
+ImageStream
+---
+version: 1
+]
+
+
+
+component Pod [
+Pod
+---
+name: app-1-xxx
+]
+
+
+
+storage app [
+app
+---
+version=1.2.3
+]
+
+IS -down-> DC  : trigger deploy on new image
+DC -right-> Pod: start via RC
+Pod -down-> app : contains
+IS -right-> DockerRegistry: scheduled import
+
+app -left-> Service : load balance
+Route -right-> Service : expose
+
+Secret -right-> DC : mount
+
+@enduml

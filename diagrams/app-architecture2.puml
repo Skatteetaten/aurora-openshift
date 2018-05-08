@@ -4,7 +4,7 @@ scale 900 height
 skinparam  BackgroundColor white
 
 
-actor User as Developer
+actor DevOps as Developer
 
 database Prometheus
 rectangle App

@@ -40,10 +40,9 @@ NTA had been involved in some sort of automation and integration work with the p
 undertakings. By the end of 2016, as the tools and services that provided those integrations matured and got structured,
 a select set of them became collectivly known as the Aurora OpenShift Platform.
 
-In December 2016 it was decided that as much possible of the Aurora OpenShift Platform should be open sourced under
+In January 2007 the platform got production status and it was decided that as much possible of the Aurora OpenShift Platform should be open sourced under
 an APL 2.0 compatible license.
 
-TODO: Went into production 1. January 2017
 
 # Requirements for the Aurora OpenShift Platform
 
