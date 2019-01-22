@@ -2,48 +2,34 @@
 scale 900 height
 !include skatt.iuml
 skinparam  BackgroundColor white
-partition klienter {
-Console<<AOS>> --> [graphql] Gobo
-Wallboard<<AOS>> --> [graphql] Gobo
-AO<<AOS>> --> [deploy, endre config]Gobo<<AOS>>
 
-Jenkins<<ANNET>> --> [sette opp systemtest]Gobo
-Jenkins --> [lage buildConfig] Gobo
-}
+AO<<OS1>> --> [deploy, endre config]Boober<<AOS>>
+
+Konsole<<AOS>> --> [graphql] Gobo
+Wallboard<<AOS>> --> [graphql] Gobo
+Jenkins<<ANNET>> --> [lage buildConfig, sette opp systemtest] AO
+
 
 Gobo<<AOS>> --> [AuroraApplication]Mokey<<AOS>>
-Gobo --> [deploy]Boober<<AOS>>
-Gobo --> [CR config]Beige
+Gobo -up-> [deploy]Boober<<AOS>>
 Gobo --> [CRUD database]DatabaseHotell
-Gobo --> [henter webseal/bigip]Skap
 Gobo -->[Nettdebug] UncleMatt<<AOT>>
-Gobo --> [admin tasks] Red
 
-Boober -up-> [CR skjema] DatabaseHotell<<AOS>>
+Boober --> [CR skjema] DatabaseHotell<<AOS>>
 
-Fergus<<AOS>> --> [CRUD vaults] Bitbucket<<ANNET>>
-Boober --> [AuroraDeploymentSpec] Beige
-Boober -right-> [sts] Skap<<SITJ>>
-Boober --> [ tagge release]DockerRegistry<<OS4>>
-Boober -up-> OpenShift
-Beige<<AOS>> --> [CRUD auroraConfig] Bitbucket<<ANNET>>
-Boober --> [vaults] Fergus
-Boober --> [store tags] Bitbucket
-
-
-Clerk<<AOS>> --> [application data]Mokey
-Red<<AOS>> --> OpenShift
+Boober --> [vaults, auroraConfig, deploymentTags] Bitbucket<<ANNET>>
+Boober --> [sts] Skap<<SITJ>>
+Boober -up-> [ tagge release] DockerRegistry<<OS4>>
+Boober -left-> OpenShift
 
 Mokey<<AOS>> --> [applicationState]OpenShift
-Mokey -up-> [Send aurora status ] Brio<<AOS>>
-Mokey -->  [instance management state] Red
-Mokey --> Redis<<OS4>>
-Prometheus<<AOT>> -->[scraper metrics AURORA_STATUS]Brio
+Prometheus<<AOT>> -->[scraper metrics AURORA_STATUS]Mokey
 
-
-Sprocket <<AOS>> --> [endringer i DC] OpenShift<<OS4>>
-Sprocket --> [app2app cert] Boober
-
+Icinga<<ANNET>> -up-> Gillis<<AOS>>
+Icinga --> Gorg<<AOS>>
+Gorg --> [ sletter temp miljø, app] OpenShift
+Gillis --> [oppdatere STS cert] Boober
+Cantus<<AOS>> --> [ hente tags, manifest] DockerRegistry
 
 
 
