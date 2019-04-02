@@ -1,0 +1,70 @@
+@startuml
+scale 600 height
+!include skatt.iuml
+skinparam  BackgroundColor white
+
+
+component Sprocket [
+Sprocket
+--
+name=app1
+namespace=foo
+labels
+ - sprocketType=ContainerImage
+ - sprocketHash=abcd123
+spec
+ - commands
+ -- kind: ImageStream
+ -- namespace: foo
+ -- name: app1
+ -- tag: default
+]
+
+component Sprocket2 [
+Sprocket
+--
+name=app2
+namespace=foo
+labels
+ - sprocketType=ContainerImage
+ - sprocketHash=abcd123
+spec
+ - commands
+ -- kind: ImageStream
+ -- namespace: foo
+ -- name: app2
+ -- tag: default
+]
+
+component ImageStream1 [
+ ImageStream
+ --
+ name=app1
+ namespace=foo
+
+]
+
+
+component ImageStream2 [
+ ImageStream
+ --
+ name=app2
+ namespace=foo
+
+]
+rectangle SprocketController
+database DockerRegistry
+
+DockerRegistry -->  SprocketController : 1. ImageChanged with sha abcd123
+SprocketController -down-> Sprocket : 2. find sprockets
+SprocketController -down-> Sprocket2 : 2. find sprockets
+SprocketController -left-> ImageStream1 : 3. import-image
+SprocketController -right-> ImageStream2 : 3. import-image
+
+
+
+
+
+
+
+@enduml
