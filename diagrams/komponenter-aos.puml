@@ -5,31 +5,33 @@ skinparam  BackgroundColor white
 
 AO<<OS1>> --> [deploy, endre config]Boober<<AOS>>
 
-Konsole<<AOS>> --> [graphql] Gobo
+Konsoll<<AOS>> --> [graphql] Gobo
 Wallboard<<AOS>> --> [graphql] Gobo
-Jenkins<<ANNET>> --> [lage buildConfig, sette opp systemtest] AO
-
+Jenkins<<ANNET>> -up-> [lage buildConfig, sette opp systemtest] AO
 
 Gobo<<AOS>> --> [AuroraApplication]Mokey<<AOS>>
-Gobo -up-> [deploy]Boober<<AOS>>
+Gobo --> [deploy]Boober<<AOS>>
 Gobo --> [CRUD database]DatabaseHotell
 Gobo -->[Nettdebug] UncleMatt<<AOT>>
+Gobo --> [tags, manifests] Cantus
 
-Boober --> [CR skjema] DatabaseHotell<<AOS>>
+Boober -up-> [CR skjema] DatabaseHotell<<AOS>>
 
 Boober --> [vaults, auroraConfig, deploymentTags] Bitbucket<<ANNET>>
 Boober --> [sts] Skap<<SITJ>>
-Boober -up-> [ tagge release] DockerRegistry<<OS4>>
-Boober -left-> OpenShift
+Boober --> [ tagge release] Cantus
+Boober --> OpenShift
 
 Mokey<<AOS>> --> [applicationState]OpenShift
 Prometheus<<AOT>> -->[scraper metrics AURORA_STATUS]Mokey
 
-Icinga<<ANNET>> -up-> Gillis<<AOS>>
+Icinga<<ANNET>> --> Gillis<<AOS>>
 Icinga --> Gorg<<AOS>>
 Gorg --> [ sletter temp miljø, app] OpenShift
 Gillis --> [oppdatere STS cert] Boober
 Cantus<<AOS>> --> [ hente tags, manifest] DockerRegistry
+
+Clerk<<AOS>> -up-> [ hente pods] OpenShift
 
 
 
