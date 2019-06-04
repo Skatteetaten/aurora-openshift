@@ -4,62 +4,25 @@ scale 600 height
 skinparam  BackgroundColor white
 
 
-component Sprocket [
-Sprocket
---
-name=app1
-namespace=foo
-labels
- - sprocketType=ContainerImage
- - sprocketHash=abcd123
-spec
- - commands
- -- kind: ImageStream
- -- namespace: foo
- -- name: app1
- -- tag: default
-]
-
-component Sprocket2 [
-Sprocket
---
-name=app2
-namespace=foo
-labels
- - sprocketType=ContainerImage
- - sprocketHash=abcd123
-spec
- - commands
- -- kind: ImageStream
- -- namespace: foo
- -- name: app2
- -- tag: default
-]
-
-component ImageStream1 [
- ImageStream
- --
- name=app1
- namespace=foo
-
-]
-
-
-component ImageStream2 [
- ImageStream
- --
- name=app2
- namespace=foo
-
-]
-rectangle SprocketController
+file Build
 database DockerRegistry
+rectangle Doc
+rectangle Sprocket
+rectangle Cantus
 
-DockerRegistry -->  SprocketController : 1. ImageChanged with sha abcd123
-SprocketController -down-> Sprocket : 2. find sprockets
-SprocketController -down-> Sprocket2 : 2. find sprockets
-SprocketController -left-> ImageStream1 : 3. import-image
-SprocketController -right-> ImageStream2 : 3. import-image
+
+database Kubernetes
+
+
+Build --> DockerRegistry : 1. Push tag foo/bar:1
+DockerRegistry -right-> Doc : 2. Audit event for foo/bar:1
+Doc -->  Sprocket : 3. ImageChanged with sha abcd123
+Sprocket --> Kubernetes: 4. find sprockets sha1-abc123
+Sprocket --> Sprocket: 6. Partition and ratelimit
+Sprocket -left-> Cantus : 5. Invalid cache for foo/bar:1
+Sprocket -left-> Kubernetes : 7. Perform updates/builds/deploys
+
+
 
 
 
