@@ -1,21 +1,20 @@
 @startuml
-scale 900 height
 !include skatt.iuml
 skinparam  BackgroundColor white
 
-AO<<OS1>> --> [deploy, endre config]Boober<<AOS>>
+Jenkins<<ANNET>> -up-> [lage buildConfig, sette opp systemtest] AO
+AO<<OS1>> -up-> [deploy, endre config]Boober<<AOS>>
 
 Konsoll<<AOS>> --> [graphql] Gobo
-Wallboard<<AOS>> --> [graphql] Gobo
-Jenkins<<ANNET>> -up-> [lage buildConfig, sette opp systemtest] AO
+Wallboard<<AOS>> -right-> [graphql] Gobo
 
 Gobo<<AOS>> --> [AuroraApplication]Mokey<<AOS>>
 Gobo --> [deploy]Boober<<AOS>>
-Gobo --> [CRUD database]DatabaseHotell
-Gobo -->[Nettdebug] UncleMatt<<AOT>>
+Gobo -down-> [CRUD database]DatabaseHotell
+Gobo -up->[Nettdebug] UncleMatt<<AOT>>
 Gobo --> [tags, manifests] Cantus
 
-Boober -up-> [CR skjema] DatabaseHotell<<AOS>>
+Boober --> [CR skjema] DatabaseHotell<<AOS>>
 
 Boober --> [vaults, auroraConfig, deploymentTags] Bitbucket<<ANNET>>
 Boober --> [sts] Skap<<SITJ>>
@@ -23,15 +22,15 @@ Boober --> [ tagge release] Cantus
 Boober --> OpenShift
 
 Mokey<<AOS>> --> [applicationState]OpenShift
-Prometheus<<AOT>> -->[scraper metrics AURORA_STATUS]Mokey
+Prometheus<<AOT>> -->[scraper metrics APPLICATION_STATUS]Mokey
 
-Icinga<<ANNET>> --> Gillis<<AOS>>
-Icinga --> Gorg<<AOS>>
+Icinga<<ANNET>> -down-> Gillis<<AOS>>
+Icinga -down-> Gorg<<AOS>>
 Gorg --> [ sletter temp miljø, app] OpenShift
 Gillis --> [oppdatere STS cert] Boober
 Cantus<<AOS>> --> [ hente tags, manifest] DockerRegistry
 
-Clerk<<AOS>> -up-> [ hente pods] OpenShift
+Clerk<<AOS>> -up-> [ hente pods, skalerer pods] OpenShift
 
 
 
